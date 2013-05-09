@@ -3,23 +3,14 @@
  */
 package com.hp.myidea.guidedroid.service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import com.hp.myidea.guidedroid.base.BluetoothConnector;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -32,6 +23,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.hp.myidea.guidedroid.GuideDroid;
+import com.hp.myidea.guidedroid.R;
+import com.hp.myidea.guidedroid.base.BluetoothConnector;
+
 /**
  * @author mapo
  *
@@ -40,7 +35,7 @@ public class BluetoothReceiver extends Service {
 
     private static final String TAG = BluetoothReceiver.class.getSimpleName();
 
-    private static final int HRM_NOTIFICATIONS = 1;
+    private static final int ARDUINO_NOTIFICATIONS = 1;
 
     public static final String ACTION_START = "startService";
     public static final String ACTION_STOP = "stopService";
@@ -55,7 +50,7 @@ public class BluetoothReceiver extends Service {
     // Message types received from the activity messenger
     // MUST start by zero due the enum mapping
     public static final int CONNECT_TO = 0;
-    public static final int GET_HRM_STATUS = 1;
+    public static final int GET_ARDUINO_STATUS = 1;
     public static final int REGISTER_LISTENER = 2;
     public static final int UNREGISTER_LISTENER = 3;
     public static final int REGISTER_HANDLER = 4;
@@ -63,29 +58,29 @@ public class BluetoothReceiver extends Service {
 
     public static enum ACTION {
     	CONNECT_TO,
-    	GET_HRM_STATUS,
+    	GET_ARDUINO_STATUS,
     	REGISTER_LISTENER,
     	UNREGISTER_LISTENER,
     	REGISTER_HANDLER,
     	UNREGISTER_HANDLER
     }
 
-    // Bluetooth and HRM statuses
+    // Bluetooth and ARDUINO statuses
     public static final int NONE = -1;
-    public static final int HRM_NOT_CONFIGURED = 0;
+    public static final int ARDUINO_NOT_CONFIGURED = 0;
     public static final int BT_DISABLED = 1;
-    public static final int HRM_CONNECTED = 2;
+    public static final int ARDUINO_CONNECTED = 2;
     public static final int CONNECTING = 3;
-    public static final int HRM_DATA = 4;
+    public static final int ARDUINO_DATA = 4;
     public static final int LOCATION_DATA = 5;
     public static final int NOT_RUNNING = 6;
 
     public static enum BT_STATUS {
-    	HRM_NOT_CONFIGURED,
+    	ARDUINO_NOT_CONFIGURED,
     	BT_DISABLED,
-    	HRM_CONNECTED,
+    	ARDUINO_CONNECTED,
     	CONNECTING,
-    	HRM_DATA,
+    	ARDUINO_DATA,
     	NOT_RUNNING
     }
 
@@ -96,7 +91,7 @@ public class BluetoothReceiver extends Service {
     public static final String TEXT_MSG = "text";
 
     // Key names sent
-    public static final String KEY_HRM_DATA = "hrm_data";
+    public static final String KEY_ARDUINO_DATA = "ARDUINO_data";
     public static final String KEY_LOCATION_DATA = "location_data";
 
     private static NotificationManager notifMgr;
@@ -107,15 +102,15 @@ public class BluetoothReceiver extends Service {
 
     private boolean running = false;
 
-    private int mBTHRMStatus = NONE;
+    private int mBTARDUINOStatus = NONE;
 
     private Messenger activityHandler = null;
 
-    // MAC address of the HRM device
-    private String mHRMdeviceAddress = null;
+    // MAC address of the ARDUINO device
+    private String arduinoBluetoothAddress = null;
     // Name of the connected device
     private String mConnectedDeviceName = null;
-    private boolean hrmConnected = false;
+    private boolean arduinoConnected = false;
 
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -123,83 +118,24 @@ public class BluetoothReceiver extends Service {
     private BluetoothConnector connector;
     private Notification notifier;
 
-    // Stuff to deal with the different signatures for startForeground
-    /*
-     * @see http://developer.android.com/reference/android/app/Service.html#startForeground(int, android.app.Notification)
-     * 
-     */
-    private static final Class[] mStartForegroundSignature = new Class[] {int.class, Notification.class};
-    private static final Class[] mStopForegroundSignature = new Class[] {boolean.class};
-
-    private Method mStartForeground;
-    private Method mStopForeground;
-    private Object[] mStartForegroundArgs = new Object[2];
-    private Object[] mStopForegroundArgs = new Object[1];
-    
-    /**
-     * This is a wrapper around the new startForeground method, using the older
-     * APIs if it is not available.
-     */
-    void startForegroundCompat(int id, Notification notification) {
-        // If we have the new startForeground API, then use it.
-        if (mStartForeground != null) {
-            mStartForegroundArgs[0] = Integer.valueOf(id);
-            mStartForegroundArgs[1] = notification;
-            try {
-                mStartForeground.invoke(this, mStartForegroundArgs);
-                Log.d(TAG, "Invoked startForeground(...)");
-            } catch (InvocationTargetException e) {
-                // Should not happen.
-                Log.e(TAG, "Unable to invoke startForeground", e);
-            } catch (IllegalAccessException e) {
-                // Should not happen.
-                Log.e(TAG, "Unable to invoke startForeground", e);
-            }
-            return;
-        }
-
-        // Fall back on the old API.
-        stopForeground(true);
-        notifMgr.notify(id, notification);
-    }
-
-    /**
-     * This is a wrapper around the new stopForeground method, using the older
-     * APIs if it is not available.
-     */
-    void stopForegroundCompat() {
-        // If we have the new stopForeground API, then use it.
-        if (mStopForeground != null) {
-            mStopForegroundArgs[0] = Boolean.TRUE;
-            try {
-                mStopForeground.invoke(this, mStopForegroundArgs);
-                Log.d(TAG, "Invoked stopForeground(...)");
-            } catch (InvocationTargetException e) {
-                // Should not happen.
-                Log.w(TAG, "Unable to invoke stopForeground", e);
-            } catch (IllegalAccessException e) {
-                // Should not happen.
-                Log.w(TAG, "Unable to invoke stopForeground", e);
-            }
-            return;
-        }
-
-        // Fall back on the old API.  Note to cancel BEFORE changing the
-        // foreground state, since we could be killed at that point.
-        stopForeground(false);
-    }
-
-    /* (non-Javadoc)
-     * @see android.app.Service#onBind(android.content.Intent)
-     */
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind()");
-        String action = intent.getAction();
-        if(action.equals("com.cardiotalkair.HRM_RECEIVER") || action.equals("com.cardiotalkair.service.IHRMReceiver")) {
-            return activityMsgListener.getBinder();
+        return mBinder;
+    }
+
+    // This is the object that receives interactions from clients.
+    private final IBinder mBinder = new BluetoothReceiverBinder();
+
+
+    /**
+     * Class for clients to access.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with
+     * IPC.
+     */
+    public class BluetoothReceiverBinder extends android.os.Binder {
+        public BluetoothReceiver getService() {
+            return BluetoothReceiver.this;
         }
-        return null;
     }
 
     @Override
@@ -215,17 +151,9 @@ public class BluetoothReceiver extends Service {
         this.toast = Toast.makeText(this, TAG, Toast.LENGTH_LONG);
         this.toast.setGravity(Gravity.CENTER, 0, 0);
 
-        try {
-            mStartForeground = getClass().getMethod("startForeground", mStartForegroundSignature);
-            mStopForeground = getClass().getMethod("stopForeground", mStopForegroundSignature);
-        } catch (NoSuchMethodException e) {
-            // Running on an older platform.
-            mStartForeground = mStopForeground = null;
-        }
-        
-        this.notifier = new Notification(R.drawable.ic_stat_notify_cardiotalk, "CardioTalk is running...", System.currentTimeMillis());
+        this.notifier = new Notification(R.drawable.ic_launcher, "GuideDroid is running...", System.currentTimeMillis());
 
-        this.notifier.setLatestEventInfo(this, "CardioTalk", "Monitoring your heart", this.buildIntent());	// TODO: Localize!!!!
+        this.notifier.setLatestEventInfo(this, "GuideDroid", "Your guide friend", this.buildIntent());	// TODO: Localize!!!!
         this.notifier.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 
     }
@@ -249,7 +177,6 @@ public class BluetoothReceiver extends Service {
     private void handleCommand(Intent intent) {
         if (ACTION_START.equals(intent.getAction())) {
             Log.d(TAG, "\n\nhandleCommand() - START ACTION");
-            startForegroundCompat(HRM_NOTIFICATIONS, this.notifier);
             this.init();
         } else if (ACTION_STOP.equals(intent.getAction())) {
             Log.d(TAG, "\n\nhandleCommand() - STOP ACTION");
@@ -261,58 +188,53 @@ public class BluetoothReceiver extends Service {
     public void onDestroy() {
         Log.d(TAG, "onDestroy()");
         this.running = false;
-		// Make sure our notification is gone.
-        stopForegroundCompat();
 	    super.onDestroy();
-        //Process.killProcess(Process.myPid());
     }
 
     private void init() {
     	Log.d(TAG, "init()\n\n\n\n");
 
-    	this.mustVibrate = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(ApplicationPreference.VIBRATE_KEY, true);
-
-    	// Connect to the HRM device
+    	// Connect to the ARDUINO device
         if (!mBluetoothAdapter.isEnabled()) {
-            this.mBTHRMStatus = BT_DISABLED;
+            this.mBTARDUINOStatus = BT_DISABLED;
             this.notifyUser("Select to enable bluetooth.", "Must enable bluetooth.");
             return;
         }
         if (!this.connectKnownDevice()) {
-    		this.mBTHRMStatus = HRM_NOT_CONFIGURED;
-    		this.notifyUser("Select to configure HRM device.", "HRM device not configured.");
+    		this.mBTARDUINOStatus = ARDUINO_NOT_CONFIGURED;
+    		this.notifyUser("Select to configure ARDUINO device.", "ARDUINO device not configured.");
         	return;
         }
-        this.notifyUser("CardioTalk is running. Select to see your heart data.", "CardioTalk is running...");
+        this.notifyUser("GuideDroid is running.", "GuideDroid is running...");
         this.running = true;
     }
 
 	private void stopAll() {
     	Log.d(TAG, "\n\n\n\nstopAll()\n\n\n\n");
-        hrmConnected = false;
+        arduinoConnected = false;
         if (this.connector != null) {
         	this.connector.stop();
         }
        
-        this.notifyUser("Stopped. Select to start again.", "Stopping CardioTalk.");
+        this.notifyUser("Stopped. Select to start again.", "Stopping GuideDroid.");
 		this.running = false;
     }
 
     private boolean connectKnownDevice() {
-    	if (hrmConnected) {
-    		Log.d(TAG, "\n\n\n\n\n\nconnectDevice():: hrmConnected says it is already connected!!!! Wrong?!?!?!");
+    	if (arduinoConnected) {
+    		Log.d(TAG, "\n\n\n\n\n\nconnectDevice():: arduinoConnected says it is already connected!!!! Wrong?!?!?!");
     		return true;
     	}
         this.restoreState();
-        if (this.mHRMdeviceAddress != null && this.mHRMdeviceAddress.length() > 0) {
-            this.connectDevice(this.mHRMdeviceAddress);
+        if (this.arduinoBluetoothAddress != null && this.arduinoBluetoothAddress.length() > 0) {
+            this.connectDevice(this.arduinoBluetoothAddress);
             return true;
         }
 		return false;    	
     }
 
     private void connectDevice(String deviceAddress) {
-    	this.mBTHRMStatus = CONNECTING;
+    	this.mBTARDUINOStatus = CONNECTING;
         if (this.connector == null) {
             this.connector = new BluetoothConnector(this, mHandler);
         }
@@ -321,20 +243,20 @@ public class BluetoothReceiver extends Service {
 
     private void restoreState() {
         // Restore state
-        SharedPreferences state = this.getSharedPreferences(ApplicationPreference.SHARED_PREFS_FILE, 0);
-        this.mHRMdeviceAddress = state.getString("HRMdeviceAddress", null);
+        SharedPreferences state = this.getSharedPreferences("GuideDroidSharedPrefs", 0);
+        this.arduinoBluetoothAddress = state.getString("ArduinoBluetoothAddress", null);
     }
 
     private void storeState() {
         // Persist state
-        SharedPreferences state = this.getSharedPreferences(ApplicationPreference.SHARED_PREFS_FILE, 0);
+        SharedPreferences state = this.getSharedPreferences("GuideDroidSharedPrefs", 0);
         SharedPreferences.Editor editor = state.edit();
-        editor.putString("HRMdeviceAddress", this.mHRMdeviceAddress);
+        editor.putString("ArduinoBluetoothAddress", this.arduinoBluetoothAddress);
         editor.commit();
     }
 
     private PendingIntent buildIntent() {
-        Intent intent = new Intent(this, CardioTalk.class);
+        Intent intent = new Intent(this, GuideDroid.class);
 
         //intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -346,12 +268,12 @@ public class BluetoothReceiver extends Service {
      * Show a notification
      */
     private void notifyUser(String action, String alert) {
-        CharSequence serviceName = "CardioTalk";  //super.getText(R.string.service_name);
+        CharSequence serviceName = "GuideDroid";  //super.getText(R.string.service_name);
         CharSequence actionText = action;	//"Monitoring your heart...";  //super.getText(R.string.something);
-        CharSequence notificationText = alert;	//"CardioTalk is running.";  //super.getText(R.string.something);
-        this.notifier = new Notification(R.drawable.ic_stat_notify_cardiotalk, notificationText, System.currentTimeMillis());
+        CharSequence notificationText = alert;	//"GuideDroid is running.";  //super.getText(R.string.something);
+        this.notifier = new Notification(R.drawable.ic_launcher, notificationText, System.currentTimeMillis());
         this.notifier.setLatestEventInfo(this, serviceName, actionText, this.buildIntent());	// TODO: Localize!!!!
-        notifMgr.notify(HRM_NOTIFICATIONS, this.notifier);
+        notifMgr.notify(ARDUINO_NOTIFICATIONS, this.notifier);
         this.thumpthump();
     }
 
@@ -389,16 +311,16 @@ public class BluetoothReceiver extends Service {
                 Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                 switch (msg.arg1) {
                 case BluetoothConnector.STATE_CONNECTED:
-                    BluetoothReceiver.this.mBTHRMStatus = HRM_CONNECTED;
-                    hrmConnected = true;
+                    BluetoothReceiver.this.mBTARDUINOStatus = ARDUINO_CONNECTED;
+                    arduinoConnected = true;
                     notifyBTState();
                     break;
                 case BluetoothConnector.STATE_CONNECTING:
-                    BluetoothReceiver.this.mBTHRMStatus = CONNECTING;
+                    BluetoothReceiver.this.mBTARDUINOStatus = CONNECTING;
                     notifyBTState();
                     break;
                 case BluetoothConnector.STATE_FAILED:
-                	BluetoothReceiver.this.mBTHRMStatus = HRM_NOT_CONFIGURED;
+                	BluetoothReceiver.this.mBTARDUINOStatus = ARDUINO_NOT_CONFIGURED;
                     notifyBTState();
                 	break;
                 case BluetoothConnector.STATE_LISTEN:
@@ -414,7 +336,7 @@ public class BluetoothReceiver extends Service {
             case MESSAGE_DEVICE_NAME:
                 // save the connected device's name
                 mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                mHRMdeviceAddress = msg.getData().getString(DEVICE_ADRESS);
+                arduinoBluetoothAddress = msg.getData().getString(DEVICE_ADRESS);
                 storeState();
                 showToast("Connected to " + mConnectedDeviceName);
                 break;
@@ -438,11 +360,11 @@ public class BluetoothReceiver extends Service {
 
     private void notifyBTState() {
         if (activityHandler != null) {
-        	if (this.mBTHRMStatus > NONE) {
-        		Log.d(TAG, "notifyBTState() - " + BT_STATUS.values()[this.mBTHRMStatus]);
+        	if (this.mBTARDUINOStatus > NONE) {
+        		Log.d(TAG, "notifyBTState() - " + BT_STATUS.values()[this.mBTARDUINOStatus]);
         	}
         	try {
-				activityHandler.send(Message.obtain(null, this.mBTHRMStatus, null));
+				activityHandler.send(Message.obtain(null, this.mBTARDUINOStatus, null));
 			} catch (RemoteException e) {
 				// Nothing to do
 			}
@@ -453,9 +375,9 @@ public class BluetoothReceiver extends Service {
 
     private void sendData(byte[] data, Messenger messenger) {
     	if (messenger != null && data != null) {
-            Message msg = Message.obtain(null, HRM_DATA);
+            Message msg = Message.obtain(null, ARDUINO_DATA);
             Bundle bundle = new Bundle();
-            bundle.putByteArray(KEY_HRM_DATA, data);
+            bundle.putByteArray(KEY_ARDUINO_DATA, data);
             msg.setData(bundle);
         	try {
 				messenger.send(msg);
@@ -466,14 +388,14 @@ public class BluetoothReceiver extends Service {
     }
 
     /**
-     * Handler of incoming messages from clients, i.e., CardioTalk activity.
+     * Handler of incoming messages from clients, i.e., GuideDroid activity.
      */
     final Handler activityMessages = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Log.i(TAG, "Received message: " + ACTION.values()[msg.what]);
             switch (msg.what) {
-            case GET_HRM_STATUS:
+            case GET_ARDUINO_STATUS:
             	break;
             case CONNECT_TO:
             	String rcvdAddress = msg.getData().getString(TEXT_MSG);
