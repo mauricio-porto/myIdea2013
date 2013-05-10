@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,7 +19,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -102,7 +102,7 @@ public class BluetoothReceiver extends Service {
 
     private boolean running = false;
 
-    private int mBTARDUINOStatus = NONE;
+    private int mBTarduinoStatus = NONE;
 
     private Messenger activityHandler = null;
 
@@ -118,6 +118,17 @@ public class BluetoothReceiver extends Service {
     private BluetoothConnector connector;
     private Notification notifier;
 
+    /**
+     * Class for clients to access.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with
+     * IPC.
+     */
+    public class BluetoothReceiverBinder extends Binder {
+        public BluetoothReceiver getService() {
+            return BluetoothReceiver.this;
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
@@ -125,18 +136,6 @@ public class BluetoothReceiver extends Service {
 
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new BluetoothReceiverBinder();
-
-
-    /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
-    public class BluetoothReceiverBinder extends android.os.Binder {
-        public BluetoothReceiver getService() {
-            return BluetoothReceiver.this;
-        }
-    }
 
     @Override
     public void onCreate() {
@@ -156,14 +155,6 @@ public class BluetoothReceiver extends Service {
         this.notifier.setLatestEventInfo(this, "GuideDroid", "Your guide friend", this.buildIntent());	// TODO: Localize!!!!
         this.notifier.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 
-    }
-
-    // This is the old onStart method that will be called on the pre-2.0
-    // platform.  On 2.0 or later we override onStartCommand() so this
-    // method will not be called.
-    @Override
-    public void onStart(Intent intent, int startId) {
-        handleCommand(intent);
     }
 
     @Override
@@ -196,12 +187,12 @@ public class BluetoothReceiver extends Service {
 
     	// Connect to the ARDUINO device
         if (!mBluetoothAdapter.isEnabled()) {
-            this.mBTARDUINOStatus = BT_DISABLED;
+            this.mBTarduinoStatus = BT_DISABLED;
             this.notifyUser("Select to enable bluetooth.", "Must enable bluetooth.");
             return;
         }
         if (!this.connectKnownDevice()) {
-    		this.mBTARDUINOStatus = ARDUINO_NOT_CONFIGURED;
+    		this.mBTarduinoStatus = ARDUINO_NOT_CONFIGURED;
     		this.notifyUser("Select to configure ARDUINO device.", "ARDUINO device not configured.");
         	return;
         }
@@ -234,7 +225,7 @@ public class BluetoothReceiver extends Service {
     }
 
     private void connectDevice(String deviceAddress) {
-    	this.mBTARDUINOStatus = CONNECTING;
+    	this.mBTarduinoStatus = CONNECTING;
         if (this.connector == null) {
             this.connector = new BluetoothConnector(this, mHandler);
         }
@@ -269,8 +260,8 @@ public class BluetoothReceiver extends Service {
      */
     private void notifyUser(String action, String alert) {
         CharSequence serviceName = "GuideDroid";  //super.getText(R.string.service_name);
-        CharSequence actionText = action;	//"Monitoring your heart...";  //super.getText(R.string.something);
-        CharSequence notificationText = alert;	//"GuideDroid is running.";  //super.getText(R.string.something);
+        CharSequence actionText = action;
+        CharSequence notificationText = alert;
         this.notifier = new Notification(R.drawable.ic_launcher, notificationText, System.currentTimeMillis());
         this.notifier.setLatestEventInfo(this, serviceName, actionText, this.buildIntent());	// TODO: Localize!!!!
         notifMgr.notify(ARDUINO_NOTIFICATIONS, this.notifier);
@@ -311,16 +302,16 @@ public class BluetoothReceiver extends Service {
                 Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                 switch (msg.arg1) {
                 case BluetoothConnector.STATE_CONNECTED:
-                    BluetoothReceiver.this.mBTARDUINOStatus = ARDUINO_CONNECTED;
+                    BluetoothReceiver.this.mBTarduinoStatus = ARDUINO_CONNECTED;
                     arduinoConnected = true;
                     notifyBTState();
                     break;
                 case BluetoothConnector.STATE_CONNECTING:
-                    BluetoothReceiver.this.mBTARDUINOStatus = CONNECTING;
+                    BluetoothReceiver.this.mBTarduinoStatus = CONNECTING;
                     notifyBTState();
                     break;
                 case BluetoothConnector.STATE_FAILED:
-                	BluetoothReceiver.this.mBTARDUINOStatus = ARDUINO_NOT_CONFIGURED;
+                	BluetoothReceiver.this.mBTarduinoStatus = ARDUINO_NOT_CONFIGURED;
                     notifyBTState();
                 	break;
                 case BluetoothConnector.STATE_LISTEN:
@@ -360,11 +351,11 @@ public class BluetoothReceiver extends Service {
 
     private void notifyBTState() {
         if (activityHandler != null) {
-        	if (this.mBTARDUINOStatus > NONE) {
-        		Log.d(TAG, "notifyBTState() - " + BT_STATUS.values()[this.mBTARDUINOStatus]);
+        	if (this.mBTarduinoStatus > NONE) {
+        		Log.d(TAG, "notifyBTState() - " + BT_STATUS.values()[this.mBTarduinoStatus]);
         	}
         	try {
-				activityHandler.send(Message.obtain(null, this.mBTARDUINOStatus, null));
+				activityHandler.send(Message.obtain(null, this.mBTarduinoStatus, null));
 			} catch (RemoteException e) {
 				// Nothing to do
 			}
