@@ -20,9 +20,7 @@ void loop() {
   unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
   unsigned int distCm = uS / US_ROUNDTRIP_CM;
   if (distCm <= MIN_DISTANCE) {
-    Serial.print("Objeto detectado a ");
-    Serial.print(distCm);
-    Serial.println("cm\n");
+    Serial.println(distCm);
   }
 }
 

@@ -54,25 +54,29 @@ public class GuideDroid extends Activity {
             finish();
             return;
         }
-		this.startBTReceiver();
+        this.startBTReceiver();
 	}
+
+	private void startBTReceiver() {
+		Log.d(TAG, "\t\t\t\t\tWILL START!!!!");
+		Intent intent = new Intent(BluetoothReceiver.ACTION_START);
+		intent.setClass(this, BluetoothReceiver.class);
+		startService(intent);
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!this.bindService(new Intent(this, BluetoothReceiver.class), this.btReceiverConnection, Context.BIND_AUTO_CREATE)) {
-            Log.e(TAG, "Binding to BluetoothReceiver failed!!! Giving up!!!");
-            this.finish();
+        if (!this.isBound) {
+        	this.isBound = this.bindService(new Intent("com.hp.myidea.guidedroid.service.BluetoothReceiver"), this.btReceiverConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (this.receiverSvcConnected) {
-            //this.btReceiver.stopService(null);
-        }
-        this.unbindService(this.btReceiverConnection);
+        this.unbindBTReceiver();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -122,7 +126,10 @@ public class GuideDroid extends Activity {
 
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "BluetoothReceiver connected");
-        	//btReceiver = ((BluetoothReceiver.BluetoothReceiverBinder)service).getService();
+            if (service == null) {
+            	Log.e(TAG, "Connection to the BluetoothReceiver service failed. Giving up...");
+            	return;
+            }
         	receiverSvcConnected = true;
 
         	messageReceiver = new Messenger(service);
@@ -140,6 +147,27 @@ public class GuideDroid extends Activity {
         }
 
     };
+
+    private void unbindBTReceiver() {
+    	Log.d(TAG, "unbindBluetoothReceiver() - supposing it is bound");
+    	if (this.isBound) {
+            if (messageReceiver  != null) {
+                try {
+                    Message msg = Message.obtain(null, BluetoothReceiver.UNREGISTER_HANDLER);
+                    msg.replyTo = serviceMsgReceiver;
+                    messageReceiver.send(msg);
+                } catch (RemoteException e) {
+                    // There is nothing special we need to do if the service
+                    // has crashed.
+                }
+            }
+            this.unbindService(btReceiverConnection);
+    	} else {
+    		Log.d(TAG, "unbindHRMReceiver() - \tBut it was not!!!");
+    	}
+    	this.receiverSvcConnected = false;
+    	this.isBound = false;
+    }
 
     /**
      * Handler of incoming messages from BluetoothReceiver.
@@ -178,20 +206,6 @@ public class GuideDroid extends Activity {
         }
     };
     final Messenger serviceMsgReceiver = new Messenger(serviceMessages);
-
-    private void startBTReceiver() {
-		Log.d(TAG, "\t\t\t\t\tWILL START BluetoothReceiver!!!!");
-		Intent intent = new Intent(BluetoothReceiver.ACTION_START);
-		intent.setClass(this, BluetoothReceiver.class);
-		startService(intent);
-    }
-
-    private void stopBTReceiver() {
-		Log.d(TAG, "\t\t\t\t\tWILL STOP BluetoothReceiver!!!!");
-		Intent intent = new Intent(BluetoothReceiver.ACTION_STOP);
-		intent.setClass(this, BluetoothReceiver.class);
-		startService(intent);
-    }
 
     private void sendTextToService(int what, String text) {
         if (messageReceiver != null) {

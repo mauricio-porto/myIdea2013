@@ -131,11 +131,13 @@ public class BluetoothReceiver extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        Log.d(TAG, "onBind()");
+        String action = intent.getAction();
+        if(action.equals("com.hp.myidea.guidedroid.service.BluetoothReceiver") || action.equals("com.hp.myidea.guidedroid.BLUETOOTH_RECEIVER")) {
+            return activityMsgListener.getBinder();
+        }
+        return null;
     }
-
-    // This is the object that receives interactions from clients.
-    private final IBinder mBinder = new BluetoothReceiverBinder();
 
     @Override
     public void onCreate() {
