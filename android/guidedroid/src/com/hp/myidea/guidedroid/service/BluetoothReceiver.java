@@ -325,6 +325,12 @@ public class BluetoothReceiver extends Service {
                 break;
             case MESSAGE_READ:
                 Log.d(TAG, "Data received.");
+                if (msg.arg1 > 0) {	// msg.arg1 contains the number of bytes read
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    Log.d(TAG, "\t\t\tHere it is: " + readMessage);
+                }
                 break;
             case MESSAGE_DEVICE_NAME:
                 // save the connected device's name
