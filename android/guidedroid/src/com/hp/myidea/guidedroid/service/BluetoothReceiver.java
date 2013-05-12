@@ -11,7 +11,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 import com.hp.myidea.guidedroid.GuideDroid;
 import com.hp.myidea.guidedroid.R;
 import com.hp.myidea.guidedroid.base.BluetoothConnector;
+import com.hp.myidea.guidedroid.base.Communicator;
 
 /**
  * @author mapo
@@ -118,16 +118,8 @@ public class BluetoothReceiver extends Service {
     private BluetoothConnector connector;
     private Notification notifier;
 
-    /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
-    public class BluetoothReceiverBinder extends Binder {
-        public BluetoothReceiver getService() {
-            return BluetoothReceiver.this;
-        }
-    }
+    private Communicator communicator;
+    private boolean communicatorSvcConnected = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -198,6 +190,9 @@ public class BluetoothReceiver extends Service {
     		this.notifyUser("Select to configure ARDUINO device.", "ARDUINO device not configured.");
         	return;
         }
+
+        this.communicator = new Communicator(this);
+
         this.notifyUser("GuideDroid is running.", "GuideDroid is running...");
         this.running = true;
     }
@@ -330,6 +325,7 @@ public class BluetoothReceiver extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     Log.d(TAG, "\t\t\tHere it is: " + readMessage);
+                	communicator.sayIt(readMessage);
                 }
                 break;
             case MESSAGE_DEVICE_NAME:
