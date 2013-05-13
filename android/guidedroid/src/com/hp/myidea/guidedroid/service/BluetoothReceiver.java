@@ -321,10 +321,14 @@ public class BluetoothReceiver extends Service {
             case MESSAGE_READ:
                 Log.d(TAG, "Data received.");
                 if (msg.arg1 > 0) {	// msg.arg1 contains the number of bytes read
+                	Log.d(TAG, "\tRead size: " + msg.arg1);
                     byte[] readBuf = (byte[]) msg.obj;
+                    byte[] readBytes = new byte[msg.arg1];
+                    System.arraycopy(readBuf, 0, readBytes, 0, msg.arg1);
+                    Log.d(TAG, "\tAs Hex: " + asHex(readBytes));
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.d(TAG, "\t\t\tHere it is: " + readMessage);
+                    Log.d(TAG, "\tHere it is: " + readMessage);
                 	communicator.sayIt(readMessage);
                 }
                 break;
@@ -342,6 +346,17 @@ public class BluetoothReceiver extends Service {
             }
         }
     };
+
+    private String asHex(byte[] buf) {
+    	char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+
+    	char[] chars = new char[2 * buf.length];
+        for (int i = 0; i < buf.length; ++i) {
+            chars[2 * i] = HEX_CHARS[(buf[i] & 0xF0) >>> 4];
+            chars[2 * i + 1] = HEX_CHARS[buf[i] & 0x0F];
+        }
+        return new String(chars);
+    }
 
     private void notifyNotRunning() {
         if (activityHandler != null) {

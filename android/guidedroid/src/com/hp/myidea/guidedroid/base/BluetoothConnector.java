@@ -16,6 +16,7 @@
 
 package com.hp.myidea.guidedroid.base;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +30,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -332,13 +332,14 @@ public class BluetoothConnector {
 
         public void run() {
             Log.i(TAG, "BEGIN mListenerThread");
-            byte[] buffer = new byte[1024];
+            byte[] buffer;
             int bytes;
 
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
                     // Read from the InputStream
+                	buffer = new byte[256];
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
@@ -354,6 +355,7 @@ public class BluetoothConnector {
         /**
          * Write to the connected OutStream.
          * @param buffer  The bytes to write
+         * 
          */
         public void write(byte[] buffer) {
             try {
