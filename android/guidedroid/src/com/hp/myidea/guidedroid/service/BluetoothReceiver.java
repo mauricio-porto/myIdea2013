@@ -98,7 +98,7 @@ public class BluetoothReceiver extends Service {
 
     private Toast toast;
     private Vibrator vibrator;
-    private boolean mustVibrate = true;
+    private boolean mustVibrate = false;
 
     private boolean running = false;
 
@@ -179,6 +179,8 @@ public class BluetoothReceiver extends Service {
     private void init() {
     	Log.d(TAG, "init()\n\n\n\n");
 
+        this.communicator = new Communicator(this);
+
     	// Connect to the ARDUINO device
         if (!mBluetoothAdapter.isEnabled()) {
             this.mBTarduinoStatus = BT_DISABLED;
@@ -190,8 +192,6 @@ public class BluetoothReceiver extends Service {
     		this.notifyUser("Select to configure ARDUINO device.", "ARDUINO device not configured.");
         	return;
         }
-
-        this.communicator = new Communicator(this);
 
         this.notifyUser("GuideDroid is running.", "GuideDroid is running...");
         this.running = true;

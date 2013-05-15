@@ -332,7 +332,7 @@ public class BluetoothConnector {
 
         public void run() {
             Log.i(TAG, "BEGIN mListenerThread");
-            byte[] buffer;
+            byte[] buffer = new byte[1024];
             int bytes;
 
             // Keep listening to the InputStream while connected
@@ -341,9 +341,12 @@ public class BluetoothConnector {
                     // Read from the InputStream
                 	buffer = new byte[256];
                     bytes = mmInStream.read(buffer);
-
-                    // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothConnector.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    if (bytes > 0) {
+                    	byte[] readBuffer = new byte[bytes];
+                    	System.arraycopy(buffer, 0, readBuffer, 0, bytes);
+                        // Send the obtained bytes to the UI Activity
+                        mHandler.obtainMessage(BluetoothConnector.MESSAGE_READ, readBuffer.length, -1, readBuffer).sendToTarget();
+                    }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
