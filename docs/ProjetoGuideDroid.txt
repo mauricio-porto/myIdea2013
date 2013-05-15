@@ -26,10 +26,10 @@ Esta atividade é mostrada como um diálogo. Ela lista todos os dispositivos par
 
 Quando um dispositivo é escolhido pelo usuário, o endereço MAC é retornado à atividade que a disparou, através do Intent resultante.
 
---------------------
-Serviço Communicator
---------------------
-Este serviço comunica de forma audível todas as notificações ao usuário, através da(s) forma(s) que o mesmo escolheu, incluindo voz ou outros avisos sonoros.
+-------------------
+Classe Communicator
+-------------------
+Esta calsse comunica de forma audível todas as notificações ao usuário, através da(s) forma(s) que o mesmo escolheu, incluindo voz ou outros avisos sonoros.
 
 As notificações usuais em Android, sejam através da barra de notificações ou através de "Toasts", são feitas através deste serviço de forma audível.
 
