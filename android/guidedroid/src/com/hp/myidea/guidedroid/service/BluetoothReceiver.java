@@ -102,7 +102,7 @@ public class BluetoothReceiver extends Service {
     private Vibrator vibrator;
     private boolean mustVibrate = false;
 
-    private boolean mustSpeak = false;
+    private boolean mustSpeak = true;
     private boolean mustSound = true;
 
 	private float defaultDuration = (float) 0.3;
@@ -334,15 +334,16 @@ public class BluetoothReceiver extends Service {
                     System.arraycopy(readBuf, 0, readBytes, 0, msg.arg1);
                     // Log.d(TAG, "\tAs Hex: " + asHex(readBytes));
                     // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
                     try {
 						int dist = Integer.parseInt(readMessage);
-	                    if (true || mustSound || !mustSpeak) {
+	                    if (mustSound || !mustSpeak) {
 	                    	communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
 	                    }
 					} catch (NumberFormatException e) {
 						// Ignore it
+						Log.e(TAG, "Error: " + e.getMessage());
 					}
                     if (mustSpeak) {
                     	communicator.sayIt(readMessage);
