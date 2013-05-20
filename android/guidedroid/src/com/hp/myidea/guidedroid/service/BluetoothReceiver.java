@@ -94,11 +94,18 @@ public class BluetoothReceiver extends Service {
     public static final String KEY_ARDUINO_DATA = "ARDUINO_data";
     public static final String KEY_LOCATION_DATA = "location_data";
 
+    public static final int DIST_FREQ_RATIO = 75000;
+
     private static NotificationManager notifMgr;
 
     private Toast toast;
     private Vibrator vibrator;
     private boolean mustVibrate = false;
+
+    private boolean mustSpeak = false;
+    private boolean mustSound = true;
+
+	private float defaultDuration = (float) 0.3;
 
     private boolean running = false;
 
@@ -325,11 +332,21 @@ public class BluetoothReceiver extends Service {
                     byte[] readBuf = (byte[]) msg.obj;
                     byte[] readBytes = new byte[msg.arg1];
                     System.arraycopy(readBuf, 0, readBytes, 0, msg.arg1);
-                    Log.d(TAG, "\tAs Hex: " + asHex(readBytes));
+                    // Log.d(TAG, "\tAs Hex: " + asHex(readBytes));
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     Log.d(TAG, "\tHere it is: " + readMessage);
-                	communicator.sayIt(readMessage);
+                    try {
+						int dist = Integer.parseInt(readMessage);
+	                    if (true || mustSound || !mustSpeak) {
+	                    	communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
+	                    }
+					} catch (NumberFormatException e) {
+						// Ignore it
+					}
+                    if (mustSpeak) {
+                    	communicator.sayIt(readMessage);
+                    }
                 }
                 break;
             case MESSAGE_DEVICE_NAME:
