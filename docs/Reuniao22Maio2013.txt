@@ -1,0 +1,37 @@
+myIdea 2013
+Projeto: Ampliação dos sentidos através de smartphones
+
+Reunião em 22/05/2013
+
+Presentes:
+	Carlos Santos
+	Maurício Porto
+
+Primeira fase - Locomoção
+-------------------------
+
+1) Versão inicial do protótipo Arduino demonstrada
+
+2) Concluir protótipo
+
+	2.1) Concluir UI  (Porto, Casantos)
+		a) Permitir selecionar Beep/Speech/Ambos (tipo de anúncio de distância)
+		b) Permitir ajuste de distância mínima e frequencia de anúncio através do celular (oportunístico)
+		c) Permitir ativar/desativar (se automático, baseado na imobilidade detectada)
+
+	2.2) Avaliação de alternativas de UI (Porto, Casantos, Juliano)
+		a) Gestos à frente do sensor ultrasonico (p.ex., um "toque" desativa, novo "toque" reativa)
+		b) Opções de acessibilidade do telefone
+
+	2.3) Carregador da bateria (João)
+
+3) Iniciar testes com protótipo (Juliano)
+
+	3.1) Chegamos à conclusão que é necessário iniciar os testes de uso do protótipo para definir melhor quais alterações se fazem necessárias.
+
+Segunda fase - Navegação/Deslocamento
+-------------------------------------
+
+1) Investigar formas de navegação "indoor" disponíveis pelas APIs do Google
+
+2) Investigar e definir estrutura de informações sobre cada prédio e sala que permita estabelecer automaticamente um roteiro entre elas. Geolocalização parece ser essencial, mas precisa estar associada com outros aspectos, como o piso (andar) e formas de acesso a uma determinada sala dentro de um prédio (tipo uma classificação hierárquica, uma taxonomia).
