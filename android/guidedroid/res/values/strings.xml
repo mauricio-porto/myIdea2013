@@ -29,4 +29,12 @@
     <string name="about">About</string>
     <string name="help">Help</string>
 
+    <!--  Content Descriptions -->
+    <string name="description_beep">Beep button</string>
+    <string name="description_speech">Speech button</string>
+    <string name="description_minus">Minus button</string>
+    <string name="description_plus">Plus button</string>
+    <string name="description_power">Power button</string>
+    <string name="description_help">Help button</string>
+
 </resources>

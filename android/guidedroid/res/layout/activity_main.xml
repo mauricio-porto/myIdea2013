@@ -8,9 +8,71 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GuideDroid" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    <ImageButton
+        android:id="@+id/btn_tone"
+        android:contentDescription="@string/description_beep"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:baselineAlignBottom="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/speaker" />
+
+    <ImageButton
+        android:id="@+id/btn_speech"
+        android:contentDescription="@string/description_speech"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignTop="@+id/btn_tone"
+        android:layout_marginLeft="96dp"
+        android:layout_toRightOf="@+id/btn_tone"
+        android:scaleType="fitCenter"
+        android:src="@drawable/speech" />
+
+    <ImageButton
+        android:id="@+id/btn_minus"
+        android:contentDescription="@string/description_minus"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginLeft="16dp"
+        android:scaleType="fitCenter"
+        android:layout_centerVertical="true"
+        android:src="@drawable/minus" />
+
+    <ImageButton
+        android:id="@+id/btn_plus"
+        android:contentDescription="@string/description_plus"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignTop="@+id/btn_minus"
+        android:layout_marginLeft="96dp"
+        android:layout_toRightOf="@+id/btn_minus"
+        android:scaleType="fitCenter"
+        android:src="@drawable/plus" />
+
+    <ImageButton
+        android:id="@+id/btn_power"
+        android:contentDescription="@string/description_power"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/power" />
+
+    <ImageButton
+        android:id="@+id/btn_help"
+        android:contentDescription="@string/description_help"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignTop="@+id/btn_power"
+        android:layout_marginLeft="96dp"
+        android:layout_toRightOf="@+id/btn_power"
+        android:scaleType="fitCenter"
+        android:src="@drawable/help" />
 
 </RelativeLayout>
