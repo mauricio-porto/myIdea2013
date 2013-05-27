@@ -14,8 +14,11 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.hp.myidea.guidedroid.base.Communicator;
 import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 
 public class GuideDroid extends Activity {
@@ -39,6 +42,8 @@ public class GuideDroid extends Activity {
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
     private static final int REQUEST_START_SERVICE = 3;
+    
+    private Communicator communicator;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,62 @@ public class GuideDroid extends Activity {
             return;
         }
         this.startBTReceiver();
+        
+        this.communicator = new Communicator(this);
+
+        ImageButton btn = (ImageButton) this.findViewById(R.id.btn_tone);
+        btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				toggleTone();
+			}
+		});
+
+        btn = (ImageButton) this.findViewById(R.id.btn_speech);
+        btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				toggleSpeech();
+			}
+		});
+
+        btn = (ImageButton) this.findViewById(R.id.btn_minus);
+        btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				decreaseDist();
+			}
+		});
+
+        btn = (ImageButton) this.findViewById(R.id.btn_plus);
+        btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				increaseDist();
+			}
+		});
+
+        btn = (ImageButton) this.findViewById(R.id.btn_power);
+        btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				toggelPower();
+			}
+		});
+
+        btn = (ImageButton) this.findViewById(R.id.btn_help);
+        btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				speakHelp();
+			}
+		});
 	}
 
 	private void startBTReceiver() {
@@ -157,8 +218,7 @@ public class GuideDroid extends Activity {
                     msg.replyTo = serviceMsgReceiver;
                     messageReceiver.send(msg);
                 } catch (RemoteException e) {
-                    // There is nothing special we need to do if the service
-                    // has crashed.
+                    // There is nothing special we need to do if the service has crashed.
                 }
             }
             this.unbindService(btReceiverConnection);
@@ -221,6 +281,35 @@ public class GuideDroid extends Activity {
         } else {
         	Log.d(TAG, "sendTextToService() - NO Service handler to receive!");
         }    	
+    }
+
+    private void toggleTone() {
+    	this.communicator.sayIt("Toggle tone pressed");
+    }
+    
+    private void toggleSpeech() {
+    	this.communicator.sayIt("Toggle speech pressed");
+    	
+    }
+    
+    private void decreaseDist() {
+    	this.communicator.sayIt("Decrease minimal distance pressed");
+    	
+    }
+    
+    private void increaseDist() {
+    	this.communicator.sayIt("Increase minimal distance pressed");
+    	
+    }
+
+    private void toggelPower() {
+    	this.communicator.sayIt("Toggle on/off pressed");
+    	
+    }
+
+    private void speakHelp() {
+    	this.communicator.sayIt("Speak help pressed");
+    	
     }
 
 }
