@@ -1,0 +1,18 @@
+Orientação
+
+Locais (prédios e salas) terão cartazes chamativos com QR-Code contendo URL que aponta para fonte de informação sobre eles.
+
+Essa informação conterá:
+
+	- Nome do prédio
+	- Nome da sala (quando sala)
+	- Piso/andar
+	- Coordenadas em formato decimal com precisão <= 10m
+		- Latitude (p.ex., -30.14777766)
+		- Longitude (p.ex., -51.21671983)
+	- Vizinho esquerdo
+	- Vizinho direito
+
+Através das coordenadas é possível determinar a distância aproximada entre dois locais.
+
+Procura por sala
