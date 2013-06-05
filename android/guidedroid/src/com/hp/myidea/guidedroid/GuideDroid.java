@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -24,11 +25,13 @@ import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 public class GuideDroid extends Activity {
 	private static final String TAG = GuideDroid.class.getSimpleName();
 
+	public static final String GUIDE_DROID_PREFS = "GuideDroidSharedPrefs";
+	public static final String GUIDE_DROID_SOUND_PREF = "GuideDroidMustSound";
+	public static final String GUIDE_DROID_SPEAK_PREF = "GuideDroidMustSpeak";
+
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
 
-    // MAC address of the HRM device
-    private String arduinoBluetoothAddress = null;
     private boolean isConfigured = false;
 
     private BluetoothReceiver btReceiver;
@@ -44,6 +47,9 @@ public class GuideDroid extends Activity {
     private static final int REQUEST_START_SERVICE = 3;
     
     private Communicator communicator;
+
+    private boolean mustSpeak = true;
+    private boolean mustSound = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -284,12 +290,17 @@ public class GuideDroid extends Activity {
     }
 
     private void toggleTone() {
-    	this.communicator.sayIt("Toggle tone pressed");
+    	this.restoreState();
+    	this.mustSound = !this.mustSound;
+    	this.storeState();
+    	this.communicator.sayIt(this.mustSound?"Will play tone":"Will NOT play tone"); // TODO: localize!!!
     }
     
     private void toggleSpeech() {
-    	this.communicator.sayIt("Toggle speech pressed");
-    	
+    	this.restoreState();
+    	this.mustSpeak = !this.mustSpeak;
+    	this.storeState();
+    	this.communicator.sayIt(this.mustSpeak?"Will speak":"Will NOT speak"); // TODO: localize!!!
     }
     
     private void decreaseDist() {
@@ -310,6 +321,22 @@ public class GuideDroid extends Activity {
     private void speakHelp() {
     	this.communicator.sayIt("Speak help pressed");
     	
+    }
+
+    private void restoreState() {
+        // Restore state
+        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
+        this.mustSound = state.getBoolean(GuideDroid.GUIDE_DROID_SOUND_PREF, true);
+        this.mustSpeak = state.getBoolean(GuideDroid.GUIDE_DROID_SPEAK_PREF, false);
+    }
+
+    private void storeState() {
+        // Persist state
+        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
+        SharedPreferences.Editor editor = state.edit();
+        editor.putBoolean(GuideDroid.GUIDE_DROID_SOUND_PREF, this.mustSound);
+        editor.putBoolean(GuideDroid.GUIDE_DROID_SPEAK_PREF, this.mustSpeak);
+        editor.commit();
     }
 
 }

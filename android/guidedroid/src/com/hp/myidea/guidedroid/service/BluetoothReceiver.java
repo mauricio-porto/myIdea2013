@@ -238,13 +238,15 @@ public class BluetoothReceiver extends Service {
 
     private void restoreState() {
         // Restore state
-        SharedPreferences state = this.getSharedPreferences("GuideDroidSharedPrefs", 0);
+        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
         this.arduinoBluetoothAddress = state.getString("ArduinoBluetoothAddress", null);
+        this.mustSound = state.getBoolean(GuideDroid.GUIDE_DROID_SOUND_PREF, true);
+        this.mustSpeak = state.getBoolean(GuideDroid.GUIDE_DROID_SPEAK_PREF, false);
     }
 
     private void storeState() {
         // Persist state
-        SharedPreferences state = this.getSharedPreferences("GuideDroidSharedPrefs", 0);
+        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
         SharedPreferences.Editor editor = state.edit();
         editor.putString("ArduinoBluetoothAddress", this.arduinoBluetoothAddress);
         editor.commit();
@@ -336,6 +338,7 @@ public class BluetoothReceiver extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
+                    restoreState();
                     try {
 						int dist = Integer.parseInt(readMessage);
 	                    if (mustSound || !mustSpeak) {
