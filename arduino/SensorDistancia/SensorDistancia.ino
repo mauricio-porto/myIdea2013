@@ -29,11 +29,13 @@ void loop() {
       range += STEP_RANGE;
       Serial.print("RANGE: ");
       Serial.println(range, DEC);
+      delay(3000);
     }
     if (c == '-' && range > MIN_DISTANCE) {
       range -= STEP_RANGE;
       Serial.print("RANGE: ");
       Serial.println(range, DEC);
+      delay(3000);
     }
   }
 

@@ -305,22 +305,18 @@ public class GuideDroid extends Activity {
     
     private void decreaseDist() {
     	this.communicator.sayIt("Decrease minimal distance pressed");
-    	
     }
     
     private void increaseDist() {
     	this.communicator.sayIt("Increase minimal distance pressed");
-    	
     }
 
     private void toggelPower() {
     	this.communicator.sayIt("Toggle on/off pressed");
-    	
     }
 
     private void speakHelp() {
     	this.communicator.sayIt("Speak help pressed");
-    	
     }
 
     private void restoreState() {
