@@ -62,21 +62,11 @@ public class Communicator implements TextToSpeech.OnInitListener {
                 // but not for the specified country and variant.
 
                 // The TTS engine has been successfully initialized.
-                // Allow the user to press the button for the app to speak again.
-                // Greet the user.
-                sayHello();
             }
         } else {
             // Initialization failed.
             Log.e(TAG, "Could not initialize TextToSpeech.");
         }
-    }
-
-    private void sayHello() {
-        String hello = "Hi, this is your guide droid starting.";
-        mTts.speak(hello,
-            TextToSpeech.QUEUE_FLUSH,  // Drop all pending entries in the playback queue.
-            null);
     }
 
 	private void initAudioDevice() {

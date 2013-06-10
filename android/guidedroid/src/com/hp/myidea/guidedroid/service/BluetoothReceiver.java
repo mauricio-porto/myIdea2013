@@ -55,6 +55,8 @@ public class BluetoothReceiver extends Service {
     public static final int REGISTER_HANDLER = 4;
     public static final int UNREGISTER_HANDLER = 5;
     public static final int SEND_MESSAGE = 6;
+    public static final int SET_TONE = 7;
+    public static final int SET_SPEECH = 8;
 
     public static enum ACTION {
     	CONNECT_TO,
@@ -63,7 +65,9 @@ public class BluetoothReceiver extends Service {
     	UNREGISTER_LISTENER,
     	REGISTER_HANDLER,
     	UNREGISTER_HANDLER,
-    	SEND_MESSAGE
+    	SEND_MESSAGE,
+    	SET_TONE,
+    	SET_SPEECH
     }
 
     // Bluetooth and ARDUINO statuses
@@ -90,6 +94,7 @@ public class BluetoothReceiver extends Service {
     public static final String DEVICE_ADRESS = "device_address";
     public static final String TOAST = "toast";
     public static final String TEXT_MSG = "text";
+    public static final String BOOL_MSG = "bool";
 
     // Key names sent
     public static final String KEY_ARDUINO_DATA = "ARDUINO_data";
@@ -343,7 +348,6 @@ public class BluetoothReceiver extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
-                    restoreState()
                     try {
 						int dist = Integer.parseInt(readMessage);
 	                    if (mustSound || !mustSpeak) {
@@ -449,6 +453,18 @@ public class BluetoothReceiver extends Service {
             	String message = msg.getData().getString(TEXT_MSG);
             	if (message != null && message.length() > 0) {
             		sendToDevice(message);
+            	}
+            	break;
+            case SET_TONE:
+            	Boolean toneBool = msg.getData().getBoolean(BOOL_MSG);
+            	if (toneBool != null) {
+            		mustSound = toneBool;
+            	}
+            	break;
+            case SET_SPEECH:
+            	Boolean speakBool = msg.getData().getBoolean(BOOL_MSG);
+            	if (speakBool != null) {
+            		mustSpeak = speakBool;
             	}
             	break;
             default:

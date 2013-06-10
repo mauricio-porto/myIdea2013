@@ -289,10 +289,27 @@ public class GuideDroid extends Activity {
         }    	
     }
 
+    private void sendBooleanToService(int what, boolean boo) {
+        if (messageReceiver != null) {
+            Message msg = Message.obtain(null, what);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(BluetoothReceiver.BOOL_MSG, boo);
+            msg.setData(bundle);
+        	try {
+				messageReceiver.send(msg);
+			} catch (RemoteException e) {
+				// Nothing to do
+			}
+        } else {
+        	Log.d(TAG, "sendTextToService() - NO Service handler to receive!");
+        }    	
+    }
+
     private void toggleTone() {
     	this.restoreState();
     	this.mustSound = !this.mustSound;
     	this.storeState();
+    	this.sendBooleanToService(BluetoothReceiver.SET_TONE, this.mustSound);
     	this.communicator.sayIt(this.mustSound?"Tone is on":"Tone is off"); // TODO: localize!!!
     }
     
@@ -300,6 +317,7 @@ public class GuideDroid extends Activity {
     	this.restoreState();
     	this.mustSpeak = !this.mustSpeak;
     	this.storeState();
+    	this.sendBooleanToService(BluetoothReceiver.SET_SPEECH, this.mustSpeak);
     	this.communicator.sayIt(this.mustSpeak?"Speak is on":"Speak is off"); // TODO: localize!!!
     }
     
