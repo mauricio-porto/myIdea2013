@@ -43,7 +43,6 @@ public class BluetoothReceiver extends Service {
     // Message types sent from the BluetoothConnector Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
 
@@ -55,6 +54,7 @@ public class BluetoothReceiver extends Service {
     public static final int UNREGISTER_LISTENER = 3;
     public static final int REGISTER_HANDLER = 4;
     public static final int UNREGISTER_HANDLER = 5;
+    public static final int SEND_MESSAGE = 6;
 
     public static enum ACTION {
     	CONNECT_TO,
@@ -62,7 +62,8 @@ public class BluetoothReceiver extends Service {
     	REGISTER_LISTENER,
     	UNREGISTER_LISTENER,
     	REGISTER_HANDLER,
-    	UNREGISTER_HANDLER
+    	UNREGISTER_HANDLER,
+    	SEND_MESSAGE
     }
 
     // Bluetooth and ARDUINO statuses
@@ -236,6 +237,12 @@ public class BluetoothReceiver extends Service {
         this.connector.connect(mBluetoothAdapter.getRemoteDevice(deviceAddress));
     }
 
+    private void sendToDevice(String msg) {
+        if (this.connector != null) {
+            connector.write(msg.getBytes());
+        }
+    }
+
     private void restoreState() {
         // Restore state
         SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
@@ -325,8 +332,6 @@ public class BluetoothReceiver extends Service {
                     break;
                 }
                 break;
-            case MESSAGE_WRITE:
-                break;
             case MESSAGE_READ:
                 Log.d(TAG, "Data received.");
                 if (msg.arg1 > 0) {	// msg.arg1 contains the number of bytes read
@@ -338,7 +343,7 @@ public class BluetoothReceiver extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
-                    restoreState();
+                    restoreState()
                     try {
 						int dist = Integer.parseInt(readMessage);
 	                    if (mustSound || !mustSpeak) {
@@ -404,20 +409,6 @@ public class BluetoothReceiver extends Service {
         }
     }
 
-    private void sendData(byte[] data, Messenger messenger) {
-    	if (messenger != null && data != null) {
-            Message msg = Message.obtain(null, ARDUINO_DATA);
-            Bundle bundle = new Bundle();
-            bundle.putByteArray(KEY_ARDUINO_DATA, data);
-            msg.setData(bundle);
-        	try {
-				messenger.send(msg);
-			} catch (RemoteException e) {
-				// Nothing to do
-			}    		
-    	}
-    }
-
     /**
      * Handler of incoming messages from clients, i.e., GuideDroid activity.
      */
@@ -453,6 +444,12 @@ public class BluetoothReceiver extends Service {
             	break;
             case UNREGISTER_HANDLER:
             	activityHandler = null;
+            	break;
+            case SEND_MESSAGE:
+            	String message = msg.getData().getString(TEXT_MSG);
+            	if (message != null && message.length() > 0) {
+            		sendToDevice(message);
+            	}
             	break;
             default:
             	break;

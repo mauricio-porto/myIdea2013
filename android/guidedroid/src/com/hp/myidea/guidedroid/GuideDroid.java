@@ -293,30 +293,32 @@ public class GuideDroid extends Activity {
     	this.restoreState();
     	this.mustSound = !this.mustSound;
     	this.storeState();
-    	this.communicator.sayIt(this.mustSound?"Will play tone":"Will NOT play tone"); // TODO: localize!!!
+    	this.communicator.sayIt(this.mustSound?"Tone is on":"Tone is off"); // TODO: localize!!!
     }
     
     private void toggleSpeech() {
     	this.restoreState();
     	this.mustSpeak = !this.mustSpeak;
     	this.storeState();
-    	this.communicator.sayIt(this.mustSpeak?"Will speak":"Will NOT speak"); // TODO: localize!!!
+    	this.communicator.sayIt(this.mustSpeak?"Speak is on":"Speak is off"); // TODO: localize!!!
     }
     
     private void decreaseDist() {
-    	this.communicator.sayIt("Decrease minimal distance pressed");
+    	this.communicator.sayIt("Decrease range");
+		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "-");
     }
     
     private void increaseDist() {
-    	this.communicator.sayIt("Increase minimal distance pressed");
+    	this.communicator.sayIt("Increase range");
+		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "+");
     }
 
     private void toggelPower() {
-    	this.communicator.sayIt("Toggle on/off pressed");
+    	this.communicator.sayIt("Power");
     }
 
     private void speakHelp() {
-    	this.communicator.sayIt("Speak help pressed");
+    	this.communicator.sayIt("Help");
     }
 
     private void restoreState() {

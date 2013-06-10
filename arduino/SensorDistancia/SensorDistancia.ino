@@ -21,19 +21,17 @@ void setup() {
 }
 
 void loop() {
-  delay(DELAY);
-
   if (Serial.available() > 0) {
     char c = Serial.read();
     if (c == '+' && range < MAX_DISTANCE) {
       range += STEP_RANGE;
-      Serial.print("RANGE: ");
+      Serial.print(" RANGE: ");
       Serial.println(range, DEC);
       delay(3000);
     }
     if (c == '-' && range > MIN_DISTANCE) {
       range -= STEP_RANGE;
-      Serial.print("RANGE: ");
+      Serial.print(" RANGE: ");
       Serial.println(range, DEC);
       delay(3000);
     }
@@ -45,5 +43,6 @@ void loop() {
     Serial.print("  "); // Lets give something to "wake-up" the receiving buffer
     Serial.print(distCm);
   }
+  delay(DELAY);
 }
 
