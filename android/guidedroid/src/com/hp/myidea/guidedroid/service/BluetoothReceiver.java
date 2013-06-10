@@ -348,17 +348,21 @@ public class BluetoothReceiver extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
-                    try {
-						int dist = Integer.parseInt(readMessage);
-	                    if (mustSound || !mustSpeak) {
-	                    	communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
-	                    }
-					} catch (NumberFormatException e) {
-						// Ignore it
-						Log.e(TAG, "Error: " + e.getMessage());
-					}
-                    if (mustSpeak) {
+                    if (readMessage.contains("ANGE:")) {
                     	communicator.sayIt(readMessage);
+                    } else {
+	                    try {
+							int dist = Integer.parseInt(readMessage);
+		                    if (mustSound || !mustSpeak) {
+		                    	communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
+		                    }
+						} catch (NumberFormatException e) {
+							// Ignore it
+							Log.e(TAG, "Error: " + e.getMessage());
+						}
+	                    if (mustSpeak) {
+	                    	communicator.sayIt(readMessage);
+	                    }
                     }
                 }
                 break;
@@ -456,16 +460,10 @@ public class BluetoothReceiver extends Service {
             	}
             	break;
             case SET_TONE:
-            	Boolean toneBool = msg.getData().getBoolean(BOOL_MSG);
-            	if (toneBool != null) {
-            		mustSound = toneBool;
-            	}
+        		mustSound = msg.getData().getBoolean(BOOL_MSG);
             	break;
             case SET_SPEECH:
-            	Boolean speakBool = msg.getData().getBoolean(BOOL_MSG);
-            	if (speakBool != null) {
-            		mustSpeak = speakBool;
-            	}
+            	mustSpeak = msg.getData().getBoolean(BOOL_MSG);
             	break;
             default:
             	break;
