@@ -1,6 +1,6 @@
 Orientação
 
-Locais (prédios e salas) terão cartazes chamativos com QR-Code contendo URL que aponta para fonte de informação sobre eles.
+Locais (prédios e salas) terão cartazes chamativos com tags NFC contendo URL que aponta para fonte de informação sobre eles.
 
 Essa informação conterá:
 
