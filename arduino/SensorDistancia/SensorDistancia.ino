@@ -10,7 +10,7 @@
 #define MIN_DISTANCE 50
 #define DEFAULT_DISTANCE 150
 #define STEP_RANGE 10
-#define DELAY 1000
+#define DELAY 100
 
 int range = DEFAULT_DISTANCE;
 
@@ -25,15 +25,13 @@ void loop() {
     char c = Serial.read();
     if (c == '+' && range < MAX_DISTANCE) {
       range += STEP_RANGE;
-      Serial.print(" RANGE: ");
-      Serial.println(range, DEC);
-      delay(3000);
     }
     if (c == '-' && range > MIN_DISTANCE) {
       range -= STEP_RANGE;
+    }
+    if (c == '?') {
       Serial.print(" RANGE: ");
       Serial.println(range, DEC);
-      delay(3000);
     }
   }
 
