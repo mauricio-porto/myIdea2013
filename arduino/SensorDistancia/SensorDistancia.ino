@@ -13,6 +13,7 @@
 #define DELAY 100
 
 int range = DEFAULT_DISTANCE;
+boolean paused = false;
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
@@ -41,8 +42,14 @@ void loop() {
   }
 
   if (distCm > 0 && distCm <= range) {
-    Serial.print("  "); // Lets give something to "wake-up" the receiving buffer
-    Serial.println(distCm, DEC);
+    if (distCm <= 10) {
+      paused = !paused;
+      delay(2000);  // Lets give some time to the hand goes away...
+    }
+    if (!paused) {
+      Serial.print("  "); // Lets give something to "wake-up" the receiving buffer
+      Serial.println(distCm, DEC);
+    }
   }
   delay(DELAY);
 }
