@@ -55,8 +55,6 @@ public class BluetoothReceiver extends Service {
     public static final int REGISTER_HANDLER = 4;
     public static final int UNREGISTER_HANDLER = 5;
     public static final int SEND_MESSAGE = 6;
-    public static final int SET_TONE = 7;
-    public static final int SET_SPEECH = 8;
 
     public static enum ACTION {
     	CONNECT_TO,
@@ -65,9 +63,7 @@ public class BluetoothReceiver extends Service {
     	UNREGISTER_LISTENER,
     	REGISTER_HANDLER,
     	UNREGISTER_HANDLER,
-    	SEND_MESSAGE,
-    	SET_TONE,
-    	SET_SPEECH
+    	SEND_MESSAGE
     }
 
     // Bluetooth and ARDUINO statuses
@@ -108,10 +104,8 @@ public class BluetoothReceiver extends Service {
     private Vibrator vibrator;
     private boolean mustVibrate = false;
 
-    private boolean mustSpeak = true;
-    private boolean mustSound = true;
-
 	private float defaultDuration = (float) 0.3;
+	private int lastDist;
 
     private boolean running = false;
 
@@ -252,8 +246,6 @@ public class BluetoothReceiver extends Service {
         // Restore state
         SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
         this.arduinoBluetoothAddress = state.getString("ArduinoBluetoothAddress", null);
-        this.mustSound = state.getBoolean(GuideDroid.GUIDE_DROID_SOUND_PREF, true);
-        this.mustSpeak = state.getBoolean(GuideDroid.GUIDE_DROID_SPEAK_PREF, false);
     }
 
     private void storeState() {
@@ -313,6 +305,7 @@ public class BluetoothReceiver extends Service {
 
     // The Handler that gets information back from the BluetoothConnector
     private final Handler mHandler = new Handler() {
+    	int counter = 0;
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -348,21 +341,28 @@ public class BluetoothReceiver extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
-                    if (readMessage.contains("ANGE:")) {
-                    	communicator.sayIt(readMessage);
+                    if (readMessage.contains("?")) {	// It is responding a question mark sent before
+                    	// format is '?<dist>#<range>'
+                    	String distance = readMessage.substring(1 + readMessage.indexOf('?'), readMessage.indexOf('#'));
+                    	String range = readMessage.substring(1 + readMessage.indexOf('#'));
+                    	StringBuilder builder = new StringBuilder();
+                    	builder.append("Distance is ");
+                    	builder.append(distance);
+                    	builder.append(", and range is ");
+                    	builder.append(range);
+                    	communicator.sayIt(builder.toString());
                     } else {
 	                    try {
 							int dist = Integer.parseInt(readMessage);
-		                    if (mustSound || !mustSpeak) {
-		                    	communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
-		                    }
+							lastDist = dist;
+							counter++; counter %= 5;
+							if (counter == 0) {
+								communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
+							}
 						} catch (NumberFormatException e) {
 							// Ignore it
 							Log.e(TAG, "Error: " + e.getMessage());
 						}
-	                    if (mustSpeak) {
-	                    	communicator.sayIt(readMessage);
-	                    }
                     }
                 }
                 break;
@@ -458,12 +458,6 @@ public class BluetoothReceiver extends Service {
             	if (message != null && message.length() > 0) {
             		sendToDevice(message);
             	}
-            	break;
-            case SET_TONE:
-        		mustSound = msg.getData().getBoolean(BOOL_MSG);
-            	break;
-            case SET_SPEECH:
-            	mustSpeak = msg.getData().getBoolean(BOOL_MSG);
             	break;
             default:
             	break;

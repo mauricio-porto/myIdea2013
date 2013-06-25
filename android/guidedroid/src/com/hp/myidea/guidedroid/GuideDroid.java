@@ -26,8 +26,6 @@ public class GuideDroid extends Activity {
 	private static final String TAG = GuideDroid.class.getSimpleName();
 
 	public static final String GUIDE_DROID_PREFS = "GuideDroidSharedPrefs";
-	public static final String GUIDE_DROID_SOUND_PREF = "GuideDroidMustSound";
-	public static final String GUIDE_DROID_SPEAK_PREF = "GuideDroidMustSpeak";
 
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -48,9 +46,6 @@ public class GuideDroid extends Activity {
     
     private Communicator communicator;
 
-    private boolean mustSpeak = true;
-    private boolean mustSound = true;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,25 +64,7 @@ public class GuideDroid extends Activity {
         
         this.communicator = new Communicator(this);
 
-        ImageButton btn = (ImageButton) this.findViewById(R.id.btn_tone);
-        btn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				toggleTone();
-			}
-		});
-
-        btn = (ImageButton) this.findViewById(R.id.btn_speech);
-        btn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				toggleSpeech();
-			}
-		});
-
-        btn = (ImageButton) this.findViewById(R.id.btn_minus);
+        ImageButton btn = (ImageButton) this.findViewById(R.id.btn_minus);
         btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -289,38 +266,6 @@ public class GuideDroid extends Activity {
         }    	
     }
 
-    private void sendBooleanToService(int what, boolean boo) {
-        if (messageReceiver != null) {
-            Message msg = Message.obtain(null, what);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(BluetoothReceiver.BOOL_MSG, boo);
-            msg.setData(bundle);
-        	try {
-				messageReceiver.send(msg);
-			} catch (RemoteException e) {
-				// Nothing to do
-			}
-        } else {
-        	Log.d(TAG, "sendTextToService() - NO Service handler to receive!");
-        }    	
-    }
-
-    private void toggleTone() {
-    	this.restoreState();
-    	this.mustSound = !this.mustSound;
-    	this.storeState();
-    	this.sendBooleanToService(BluetoothReceiver.SET_TONE, this.mustSound);
-    	this.communicator.sayIt(this.mustSound?"Tone is on":"Tone is off"); // TODO: localize!!!
-    }
-    
-    private void toggleSpeech() {
-    	this.restoreState();
-    	this.mustSpeak = !this.mustSpeak;
-    	this.storeState();
-    	this.sendBooleanToService(BluetoothReceiver.SET_SPEECH, this.mustSpeak);
-    	this.communicator.sayIt(this.mustSpeak?"Speak is on":"Speak is off"); // TODO: localize!!!
-    }
-    
     private void decreaseDist() {
     	this.communicator.sayIt("Decrease range");
 		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "-");
@@ -336,23 +281,8 @@ public class GuideDroid extends Activity {
     }
 
     private void speakHelp() {
-    	this.communicator.sayIt("Help");
-    }
-
-    private void restoreState() {
-        // Restore state
-        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
-        this.mustSound = state.getBoolean(GuideDroid.GUIDE_DROID_SOUND_PREF, true);
-        this.mustSpeak = state.getBoolean(GuideDroid.GUIDE_DROID_SPEAK_PREF, false);
-    }
-
-    private void storeState() {
-        // Persist state
-        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
-        SharedPreferences.Editor editor = state.edit();
-        editor.putBoolean(GuideDroid.GUIDE_DROID_SOUND_PREF, this.mustSound);
-        editor.putBoolean(GuideDroid.GUIDE_DROID_SPEAK_PREF, this.mustSpeak);
-        editor.commit();
+    	//this.communicator.sayIt("Help");
+		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "?");
     }
 
 }

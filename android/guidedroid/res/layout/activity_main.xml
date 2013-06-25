@@ -9,37 +9,13 @@
     tools:context=".GuideDroid" >
 
     <ImageButton
-        android:id="@+id/btn_tone"
-        android:contentDescription="@string/description_beep"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/speaker" />
-
-    <ImageButton
-        android:id="@+id/btn_speech"
-        android:contentDescription="@string/description_speech"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/speech" />
-
-    <ImageButton
         android:id="@+id/btn_minus"
         android:contentDescription="@string/description_minus"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_marginLeft="16dp"
         android:scaleType="fitCenter"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
         android:src="@drawable/minus" />
 
     <ImageButton
@@ -47,7 +23,7 @@
         android:contentDescription="@string/description_plus"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
         android:scaleType="fitCenter"

@@ -21,6 +21,9 @@ void setup() {
 }
 
 void loop() {
+  unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
+  unsigned int distCm = uS / US_ROUNDTRIP_CM;
+
   if (Serial.available() > 0) {
     char c = Serial.read();
     if (c == '+' && range < MAX_DISTANCE) {
@@ -30,16 +33,16 @@ void loop() {
       range -= STEP_RANGE;
     }
     if (c == '?') {
-      Serial.print(" RANGE: ");
-      Serial.println(range, DEC);
+      Serial.print(" ?");
+      Serial.print(distCm);
+      Serial.print("#");
+      Serial.print(range);
     }
   }
 
-  unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-  unsigned int distCm = uS / US_ROUNDTRIP_CM;
   if (distCm > 0 && distCm <= range) {
     Serial.print("  "); // Lets give something to "wake-up" the receiving buffer
-    Serial.print(distCm);
+    Serial.println(distCm, DEC);
   }
   delay(DELAY);
 }
