@@ -1,0 +1,37 @@
+Toda navegação é baseada em coordenadas geográficas. Estas permitem determinar a distância entre 2 pontos e também a orientação magnética.
+
+Na entrada de cada prédio terá um cartaz com tag NFC que possui a URL de um conteúdo que descreve o prédio, com suas salas e inclusive sua planta (croqui).
+
+Dentro de um prédio temos 2 tipos de cartazes com tags NFC: os que indicam as salas relacionadas, fixados nas suas portas, e os que apenas informam localização (geo location).
+
+
+Como funciona:
+-------------
+
+Dentro do prédio a bússola funciona. Ao indicar o destino, a aplicação pode determinar a distância aproximada em linha reta e a direção, desde que saiba sua localização atual. Isso pode ser obtido no cartaz de entrada do prédio ou em cada um dos cartazes de localização, dispostos a intervalos de alguns metros um do outro.
+Podendo determinar distância aproximada e direção, basta enunciá-las, numa forma semelhante à brincadeira cabra-cega.
+
+GPS Receiver:
+------------
+
+http://dx.com/p/g-mouse-mini-usb-sirf-star-iii-20-channel-gps-receiver-for-pc-and-laptops-19498
+
+
+Cartões RFid:
+------------
+
+http://produto.mercadolivre.com.br/MLB-492349270-carto-rfid-mifare-1356mhz-1k-kit-com-10-_JM
+
+	Especificações
+	padrão ISO14443A S50
+	Freqüência: 13,56 MHz 
+	Capacidade: 1k Byte de memória EEPROM
+	Número de reescrita: 100.000 vezes 
+	Distância de leitura: aprox 10 cm  (depende do leitor)
+	Material: PVC 
+	Dimensões: 85 * 54 * 0,9 milímetros
+	Espessura 0.9mm
+	Vem embalados individualmente (muito bom pois evita sujar com gordura das mãos, o que pode prejudicar a impressão no cartão)
+	Pergunte para saber a quantidade disponível
+	*Frete por conta do comprador
+	 Preço é do kit com 10 unidades
