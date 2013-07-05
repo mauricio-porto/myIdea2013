@@ -11,6 +11,8 @@ Como funciona:
 Dentro do prédio a bússola funciona. Ao indicar o destino, a aplicação pode determinar a distância aproximada em linha reta e a direção, desde que saiba sua localização atual. Isso pode ser obtido no cartaz de entrada do prédio ou em cada um dos cartazes de localização, dispostos a intervalos de alguns metros um do outro.
 Podendo determinar distância aproximada e direção, basta enunciá-las, numa forma semelhante à brincadeira cabra-cega.
 
+Além do formato e conteúdo visual contrastante, permitindo sua identificação por pessoas que tenham baixa capacidade visual, seria interessante ter esses caminhos indicados através das vias especiais em relevo no chão. Piso tátil.
+
 GPS Receiver:
 ------------
 
