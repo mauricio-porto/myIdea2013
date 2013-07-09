@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.hp.myidea.guidedroid.base.Communicator;
+import com.hp.myidea.guidedroid.base.IndoorNavigation;
 import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 
 public class GuideDroid extends Activity {
@@ -51,7 +52,9 @@ public class GuideDroid extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// Get local Bluetooth adapter
+		IndoorNavigation.testCalculate();
+
+/*		// Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported
@@ -63,7 +66,7 @@ public class GuideDroid extends Activity {
         this.startBTReceiver();
         
         this.communicator = new Communicator(this);
-
+*/
         ImageButton btn = (ImageButton) this.findViewById(R.id.btn_minus);
         btn.setOnClickListener(new View.OnClickListener() {
 			
