@@ -1,4 +1,4 @@
-package com.hp.myidea.guidedroid;
+package com.hp.myidea.guidedroid.app;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -19,6 +19,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.hp.myidea.guidedroid.R;
+import com.hp.myidea.guidedroid.R.id;
+import com.hp.myidea.guidedroid.R.layout;
+import com.hp.myidea.guidedroid.R.menu;
+import com.hp.myidea.guidedroid.R.string;
 import com.hp.myidea.guidedroid.base.Communicator;
 import com.hp.myidea.guidedroid.base.IndoorNavigation;
 import com.hp.myidea.guidedroid.service.BluetoothReceiver;
@@ -90,7 +95,7 @@ public class GuideDroid extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				toggelPower();
+				startActivity(new Intent(GuideDroid.this, DisplayOrientation.class));
 			}
 		});
 

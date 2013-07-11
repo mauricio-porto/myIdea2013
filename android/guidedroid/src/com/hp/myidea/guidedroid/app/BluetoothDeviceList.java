@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package com.hp.myidea.guidedroid;
+package com.hp.myidea.guidedroid.app;
 
 import java.util.Set;
+
+import com.hp.myidea.guidedroid.R;
+import com.hp.myidea.guidedroid.R.id;
+import com.hp.myidea.guidedroid.R.layout;
+import com.hp.myidea.guidedroid.R.string;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

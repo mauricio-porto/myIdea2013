@@ -22,8 +22,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.hp.myidea.guidedroid.GuideDroid;
 import com.hp.myidea.guidedroid.R;
+import com.hp.myidea.guidedroid.app.GuideDroid;
 import com.hp.myidea.guidedroid.base.BluetoothConnector;
 import com.hp.myidea.guidedroid.base.Communicator;
 

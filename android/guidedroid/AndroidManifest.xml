@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.hp.myidea.guidedroid.GuideDroid"
+            android:name="com.hp.myidea.guidedroid.app.GuideDroid"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,11 +28,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".BluetoothDeviceList"
+        <activity android:name="com.hp.myidea.guidedroid.app.BluetoothDeviceList"
                   android:label="@string/select_device"
                   android:theme="@android:style/Theme.Dialog"
                   android:configChanges="orientation|keyboardHidden" />
 
+        <activity android:name="com.hp.myidea.guidedroid.app.DisplayOrientation" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
         <service android:name=".service.BluetoothReceiver"
                  android:process=":remote" android:enabled="true" android:exported="true">
             <intent-filter>

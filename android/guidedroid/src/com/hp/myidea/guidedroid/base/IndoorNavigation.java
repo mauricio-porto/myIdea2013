@@ -20,8 +20,11 @@ public class IndoorNavigation {
 	private static final String TAG = IndoorNavigation.class.getSimpleName();
 
 	private Context owner;
-	private SensorManager sensorService;
-	private Sensor sensor;
+	private SensorManager mSensorService;
+	private Sensor mAccelerometer;
+	private Sensor mMageneticField;
+	private float[] mGravity;
+	private float[] mMagnetic;
 
 	/**
 	 * 
@@ -33,13 +36,13 @@ public class IndoorNavigation {
 	}
 
 	private void init() {
-		sensorService = (SensorManager) this.owner.getSystemService(Context.SENSOR_SERVICE);
+		mSensorService = (SensorManager) this.owner.getSystemService(Context.SENSOR_SERVICE);
 
-		Sensor mAccelerometer = sensorService.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		Sensor mMageneticField = sensorService.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		mAccelerometer = mSensorService.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		mMageneticField = mSensorService.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-		sensorService.registerListener(mySensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-		sensorService.registerListener(mySensorEventListener, mMageneticField, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorService.registerListener(mySensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorService.registerListener(mySensorEventListener, mMageneticField, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	private SensorEventListener mySensorEventListener = new SensorEventListener() {
@@ -51,15 +54,14 @@ public class IndoorNavigation {
 		@Override
 		public void onSensorChanged(SensorEvent event) {
 			switch (event.sensor.getType()) {
-
-			case Sensor.TYPE_ACCELEROMETER:
-				mGravity = event.values.clone();
-				break;
-			case Sensor.TYPE_MAGNETIC_FIELD:
-				mMagnetic = event.values.clone();
-				break;
-			default:
-				return;
+				case Sensor.TYPE_ACCELEROMETER:
+					mGravity = event.values.clone();
+					break;
+				case Sensor.TYPE_MAGNETIC_FIELD:
+					mMagnetic = event.values.clone();
+					break;
+				default:
+					return;
 			}
 			if (mGravity != null && mMagnetic != null) {
 				getDirection();
@@ -70,9 +72,6 @@ public class IndoorNavigation {
 	/**
 	 * http://capycoding.blogspot.com.br/2012/10/get-angle-from-sensor-in-android.html
 	 */
-	private float[] mGravity;
-	private float[] mMagnetic;
-
 	private float getDirection() {
 
 		float[] temp = new float[9];
@@ -116,12 +115,24 @@ public class IndoorNavigation {
 		src.setLatitude(-30.14779148);
 		src.setAltitude(34);
 
-		Location dst = new Location("AdHoc");
-		dst.setLongitude(-51.21663651);
-		dst.setLatitude(-30.14779148);
-		src.setAltitude(43);
+		Location dst270 = new Location("AdHoc");
+		dst270.setLongitude(-51.21663651);
+		dst270.setLatitude(-30.14779148);
+		dst270.setAltitude(43);
 
-		Log.d(TAG, "\n\n\n\n\nDistancia: " + IndoorNavigation.calculateDistance(src, dst));
-		Log.d(TAG, "\n\n\n\n\nDistance: " + src.distanceTo(dst));
+		Log.d(TAG, "\n\n\n\n\nDistancia: " + IndoorNavigation.calculateDistance(src, dst270));
+		Log.d(TAG, "\n\n\n\n\nDistance: " + src.distanceTo(dst270));
+
+		Location dst90 = new Location("AdHoc");
+		dst90.setLongitude(-51.21661651);
+		dst90.setLatitude(-30.14779148);
+
+		Location dst180 = new Location("AdHoc");
+		dst180.setLongitude(-51.21662651);
+		dst180.setLatitude(-30.14789148);
+
+		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 90): " + src.bearingTo(dst90));
+		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 180): " + src.bearingTo(dst180));
+		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 270): " + src.bearingTo(dst270));
 	}
 }
