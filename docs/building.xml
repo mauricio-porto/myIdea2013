@@ -1,0 +1,100 @@
+<building guidedroid:name="" guidedroid:lat="" guidedroid:lng="" guidedroid:hashId=""/>
+	<floor guidedroid:level="" guidedroid:altitude="">
+		<geopoint
+			guidedroid:name=""
+			guidedroid:type="ROOM | PATH | STAIR"
+			guidedroid:lat=""
+			guidedroid:lng=""
+			guidedroid:hashId="<calculate from name+lat+lng>"
+			guidedroid:parent="" />
+	</floor>
+</building>
+
+
+Exemplos:
+--------
+
+<building guidedroid:name="91-A" guidedroid:lat="-30.01234" guidedroid:lng="-51.43210" guidedroid:hashId="cabeca-01"/>
+	<floor guidedroid:level="1" guidedroid:altitude="34">
+		<geopoint
+			guidedroid:name="NONE"
+			guidedroid:type="STAIR"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="caf0da-01"
+			guidedroid:parent="cabeca-01" />
+		<geopoint
+			guidedroid:name="NONE"
+			guidedroid:type="PATH"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="cacaca-01"
+			guidedroid:parent="cabeca-01" />
+		<geopoint
+			guidedroid:name="NONE"
+			guidedroid:type="PATH"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="cacaca-02"
+			guidedroid:parent="cacaca-01" />
+		<geopoint
+			guidedroid:name="Zimbros"
+			guidedroid:type="ROOM"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="decafe-01"
+			guidedroid:parent="cacaca-02" />
+	</floor>
+	<floor guidedroid:level="2" guidedroid:altitude="37">
+		<geopoint
+			guidedroid:name="NONE"
+			guidedroid:type="STAIR"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="caf0da-02"
+			guidedroid:parent="caf0da-01" />
+		<geopoint
+			guidedroid:name="NONE"
+			guidedroid:type="PATH"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="c0cada-01"
+			guidedroid:parent="caf0da-02" />
+		<geopoint
+			guidedroid:name="NONE"
+			guidedroid:type="PATH"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="c0cada-02"
+			guidedroid:parent="c0cada-01" />
+		<geopoint
+			guidedroid:name="Porto Belo"
+			guidedroid:type="ROOM"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="defeca-01"
+			guidedroid:parent="c0cada-02" />
+		<geopoint
+			guidedroid:name="Female Rest Room"
+			guidedroid:type="ROOM"
+			guidedroid:lat="-30.01234"
+			guidedroid:lng="-51.43210"
+			guidedroid:hashId="defeca-02"
+			guidedroid:parent="c0cada-01" />
+	</floor>
+</building>
+
+Caminhos:
+--------
+
+1) Da entrada do prédio até a sala Zimbros:
+
+	/cabeca-01/cacaca-01/cacaca-02/decafe-01 (aka Zimbros)
+
+2) Da entrada do prédio até a sala Porto Belo:
+
+	/cabeca-01/caf0da-01/caf0da-02/c0cada-01/c0cada-02/defeca-01 (aka Porto Belo)
+
+3) Da sala Porto Belo até o banheiro feminino no 2o piso:
+
+	./defeca-01/c0cada-02/c0cada-01/defeca-02 (aka Female Rest Room)
