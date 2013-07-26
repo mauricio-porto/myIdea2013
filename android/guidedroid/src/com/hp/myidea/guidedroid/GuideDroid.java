@@ -270,14 +270,15 @@ public class GuideDroid extends Activity {
     	this.communicator.sayIt("Decrease range");
 		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "-");
     }
-    
+
     private void increaseDist() {
     	this.communicator.sayIt("Increase range");
 		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "+");
     }
 
     private void toggelPower() {
-    	this.communicator.sayIt("Power");
+    	this.communicator.sayIt("Start, Stop");
+		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "!");
     }
 
     private void speakHelp() {
