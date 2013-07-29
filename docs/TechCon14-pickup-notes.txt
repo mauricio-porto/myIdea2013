@@ -1,0 +1,26 @@
+Title:
+=====
+
+Abstract:
+========
+
+Problem statement:
+=================
+
+Constant changes in the workplace and on the street offer collision risks much higher than the domestic environment for the visually impaired;
+For these, move first from one room to another, especially if it involves different buildings, is an arduous task;
+The public communication made ​​by posters and other writings is abundant but inaccessible to the disabled.
+
+Our solution:
+============
+
+Through the extensive use of sensors and location features existing in smartphones and other mobile devices, assist people with visual disabilities and / or hearing in tasks such as locomotion, identification of places and services available, and the location and orientation courses.
+
+Evidence the solution works:
+===========================
+
+Competitive approaches:
+======================
+
+Current status and Next steps:
+=============================
