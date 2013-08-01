@@ -41,6 +41,12 @@ public class Communicator implements TextToSpeech.OnInitListener {
 		short[] audioData = this.generateTone(freq, duration);
 		this.track.write(audioData, 0, audioData.length);
 		track.play();
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e) {
+			// Nothing to do
+		}
+		track.stop();
 	}
 
     // Implements TextToSpeech.OnInitListener.

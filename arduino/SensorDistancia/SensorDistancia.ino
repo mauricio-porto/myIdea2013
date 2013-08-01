@@ -45,6 +45,9 @@ void loop() {
       Serial.print(distCm);
       Serial.print("#");
       Serial.print(range);
+      if (running) {
+        Serial.print("!");
+      }
       goto bailout;
     }
   }

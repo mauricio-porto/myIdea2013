@@ -105,7 +105,6 @@ public class BluetoothReceiver extends Service {
     private boolean mustVibrate = false;
 
 	private float defaultDuration = (float) 0.3;
-	private int lastDist;
 
     private boolean running = false;
 
@@ -331,7 +330,7 @@ public class BluetoothReceiver extends Service {
                 }
                 break;
             case MESSAGE_READ:
-                Log.d(TAG, "Data received.");
+                Log.d(TAG, "\n\nData received.");
                 if (msg.arg1 > 0) {	// msg.arg1 contains the number of bytes read
                 	Log.d(TAG, "\tRead size: " + msg.arg1);
                     byte[] readBuf = (byte[]) msg.obj;
@@ -342,20 +341,25 @@ public class BluetoothReceiver extends Service {
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
                     Log.d(TAG, "\tHere it is: " + readMessage);
                     if (readMessage.contains("?")) {	// It is responding a question mark sent before
-                    	// format is '?<dist>#<range>'
+                    	// format is '?<dist>#<range>[!]'
                     	String distance = readMessage.substring(1 + readMessage.indexOf('?'), readMessage.indexOf('#'));
                     	String range = readMessage.substring(1 + readMessage.indexOf('#'));
+                    	boolean running = range.contains("!");
+                    	if (running) {
+                    		range = range.substring(0, range.length() -1);
+                    	}
                     	StringBuilder builder = new StringBuilder();
                     	builder.append("Distance is ");
                     	builder.append(distance);
                     	builder.append(", and range is ");
-                    	builder.append(range);
+                    	builder.append(range).append(", ");
+                    	builder.append(running?"is running":"is not running");
                     	communicator.sayIt(builder.toString());
                     } else {
 	                    try {
 							int dist = Integer.parseInt(readMessage);
-							lastDist = dist;
-							counter++; counter %= 5;
+							counter++;
+							counter %= 5;
 							if (counter == 0) {
 								communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
 							}
