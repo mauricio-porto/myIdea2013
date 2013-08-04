@@ -26,7 +26,7 @@ USE CASES
 	2.2) Caso ainda não tenha feito, a aplicação carregará a descrição do prédio
 	2.3) A orientação Indoor já definida segue então
 
-3) Pessoa encontra-se num prédio conhecido e precisa chegar a uma sala em outro prédio
+3) Pessoa encontra-se num prédio conhecido e precisa chegar a uma sala em outro prédio desconhecido
 
 	3.1) Ela é orientada a tocar numa tag NFC próxima
 	3.2) A partir daí, é orientada até encontrar a saída do prédio atual
