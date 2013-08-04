@@ -1,0 +1,35 @@
+INDOOR ORIENTATION
+==================
+
+	- O processo de orientação SOMENTE inicia com a leitura de uma tag NFC, pois a aplicação PRECISA saber onde se encontra ("Qualquer/nenhuma direção é favorável quando desconhecemos onde estamos.");
+
+	- Quando lida a tag, a aplicação enuncia o local e destino (se houver) atuais, avisando que o usuário pode mudar o destino se desejar (c/ timeout);
+
+	- A seguir a aplicação pede que o celular seja girado na horizontal p/ encontrar a direção a seguir;
+
+	- Uma vez encontrada a direção (o celular vibra), a aplicação diz "Siga nesta direção por X metros".
+
+
+USE CASES
+=========
+
+
+1) Pessoa chega a um prédio desconhecido e precisa orientação para chegar a uma sala deste prédio
+
+	1.1) Ela é orientada a tocar numa tag NFC próxima (sempre há uma na entrada do prédio, mas outra qualquer pode ser usada)
+	1.2) Caso ainda não tenha feito, a aplicação carregará a descrição do prédio
+	1.3) A orientação Indoor já definida segue então
+
+2) Pessoa encontra-se num prédio conhecido e precisa chegar a uma sala desconhecida deste prédio
+
+	2.1) Ela é orientada a tocar numa tag NFC próxima
+	2.2) Caso ainda não tenha feito, a aplicação carregará a descrição do prédio
+	2.3) A orientação Indoor já definida segue então
+
+3) Pessoa encontra-se num prédio conhecido e precisa chegar a uma sala em outro prédio
+
+	3.1) Ela é orientada a tocar numa tag NFC próxima
+	3.2) A partir daí, é orientada até encontrar a saída do prédio atual
+	3.3) Neste ponto é usada navegação Outdoor (existente) até chegar ao novo prédio
+	3.4) Na entrada do prédio deve tocar em nova tag NFC que carregará a descrição do mesmo
+	3.5) A orientação Indoor já definida segue então
