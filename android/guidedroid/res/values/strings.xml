@@ -3,7 +3,9 @@
 
     <string name="app_name">Guide Droid</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+
+    <string name="title_section1">Ultrasonic</string>
+    <string name="title_section2">Directions</string>
 
     <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
@@ -37,4 +39,17 @@
     <string name="description_power">Power button</string>
     <string name="description_help">Help button</string>
 
+    <!-- FAKE Room names -->
+    <string-array name="room_names">
+        <item>Bombas</item>
+        <item>Bombinhas</item>
+        <item>Capao da Canoa</item>
+        <item>Garopaba</item>
+        <item>Laranjal</item>
+        <item>Porto Belo</item>
+        <item>Quatro Ilhas</item>
+        <item>Tramandai</item>
+        <item>Zimbros</item>
+        <item>Another building</item>
+    </string-array>
 </resources>
