@@ -1,6 +1,8 @@
 Title:
 =====
 
+GuideDroid: A Low Cost Indoor Navigation Assisten for Impaired Vision Persons
+
 Abstract:
 ========
 
