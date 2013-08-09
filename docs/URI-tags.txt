@@ -2,5 +2,5 @@ URI scheme: guidedroid://
 URL: indoor (domain)
 URN: geopoint
 
-guidedroid://indoor/geopoint?building=<id>&point=<id>&lat=<latitude>&lng=<longitude>
+guidedroid://indoor/geopoint?building=<id>&point=<id>
 
