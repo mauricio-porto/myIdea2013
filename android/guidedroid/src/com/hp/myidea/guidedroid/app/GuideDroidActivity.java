@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.hp.myidea.guidedroid.R;
 import com.hp.myidea.guidedroid.base.Communicator;
+import com.hp.myidea.guidedroid.base.DOMUtil;
 import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 
 public class GuideDroidActivity extends FragmentActivity {
@@ -57,6 +58,7 @@ public class GuideDroidActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        DOMUtil.test(this);
     }
 
     /* (non-Javadoc)

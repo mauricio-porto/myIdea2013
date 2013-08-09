@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<building xmlns:guidedroid="http://www.hp.com/myIdea/XMLSchema" 
+    guidedroid:name="91-A" guidedroid:lat="-30.01234" guidedroid:lng="-51.43210" guidedroid:hashId="cabeca-01" >
+    <floor guidedroid:level="1" guidedroid:altitude="34">
+        <geopoints>
+            <geopoint
+                guidedroid:name="NONE"
+                guidedroid:type="STAIR"
+                guidedroid:lat="-30.01234"
+                guidedroid:lng="-51.43210"
+                guidedroid:hashId="caf0da-01" />
+            <geopoint
+                guidedroid:name="NONE"
+                guidedroid:type="PATH"
+                guidedroid:lat="-30.01234"
+                guidedroid:lng="-51.43210"
+                guidedroid:hashId="cacaca-01" />
+            <geopoint
+                guidedroid:name="NONE"
+                guidedroid:type="PATH"
+                guidedroid:lat="-30.01234"
+                guidedroid:lng="-51.43210"
+                guidedroid:hashId="cacaca-02" />
+            <geopoint
+                guidedroid:name="Zimbros"
+                guidedroid:type="ROOM"
+                guidedroid:lat="-30.01234"
+                guidedroid:lng="-51.43210"
+                guidedroid:hashId="decafe-01" />
+        </geopoints>
+        <connections>
+            <connection
+                guidedroid:source="caf0da-01"
+                guidedroid:destination="cacaca-01"
+                guidedroid:distance="2.5" />
+            <connection
+                guidedroid:source="cacaca-01"
+                guidedroid:destination="cacaca-02"
+                guidedroid:distance="3.5" />
+            <connection
+                guidedroid:source="cacaca-02"
+                guidedroid:destination="Zimbros"
+                guidedroid:distance="3.0" />
+        </connections>
+    </floor>
+</building>
