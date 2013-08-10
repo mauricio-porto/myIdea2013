@@ -91,7 +91,7 @@ public class IndoorNavigation {
 			Double degrees = (values[i] * 180) / Math.PI;
 			values[i] = degrees.floatValue();
 		}
-		// angle between the magnetic north directio
+		// angle between the magnetic north direction
 	    // 0=North, 90=East, 180=South, 270=West
 		return values[0];
 	}
@@ -124,7 +124,7 @@ public class IndoorNavigation {
 		Log.d(TAG, "\n\n\n\n\nDistance: " + src.distanceTo(dst270));
 
 		Location dst90 = new Location("AdHoc");
-		dst90.setLongitude(-51.21661651);
+		dst90.setLongitude(-51.21652651);
 		dst90.setLatitude(-30.14779148);
 
 		Location dst180 = new Location("AdHoc");
@@ -132,6 +132,7 @@ public class IndoorNavigation {
 		dst180.setLatitude(-30.14789148);
 
 		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 90): " + src.bearingTo(dst90));
+        Log.d(TAG, "\n\n\n\n\nDistance: " + src.distanceTo(dst90));
 		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 180): " + src.bearingTo(dst180));
 		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 270): " + src.bearingTo(dst270));
 	}
