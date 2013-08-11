@@ -14,7 +14,7 @@ import com.hp.myidea.guidedroid.base.IndoorNavigation;
 public final class NavigationSectionFragment extends Fragment implements DirectionListener {
 
     private TextView txtAngle;
-    private Compass myCompass;
+    private CompassView myCompass;
     private IndoorNavigation navigation;
 
     public NavigationSectionFragment() {
@@ -25,7 +25,7 @@ public final class NavigationSectionFragment extends Fragment implements Directi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.display_orientation, container, false);
         txtAngle = (TextView)rootView.findViewById(R.id.azimuth);
-        myCompass = (Compass)rootView.findViewById(R.id.mycompass);
+        myCompass = (CompassView)rootView.findViewById(R.id.mycompass);
 
         return rootView;
     }

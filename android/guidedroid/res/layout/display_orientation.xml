@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
-    <com.hp.myidea.guidedroid.app.Compass
+    <com.hp.myidea.guidedroid.app.CompassView
         android:id="@+id/mycompass"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
