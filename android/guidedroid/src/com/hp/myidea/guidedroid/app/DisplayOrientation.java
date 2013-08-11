@@ -43,7 +43,7 @@ public class DisplayOrientation extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.display_orientation);
 
-		txtAngle = (TextView)findViewById(R.id.txt_orientation);
+		txtAngle = (TextView)findViewById(R.id.azimuth);
 
 		mSensorService = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
 

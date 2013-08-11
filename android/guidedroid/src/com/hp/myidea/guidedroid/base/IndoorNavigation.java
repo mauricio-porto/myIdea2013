@@ -24,8 +24,14 @@ public class IndoorNavigation {
 	private SensorManager mSensorService;
 	private Sensor mAccelerometer;
 	private Sensor mMagneticField;
-	private float[] mGravity;
-	private float[] mMagnetic;
+
+	private float[] valuesAccelerometer;
+    private float[] valuesMagneticField;
+
+    private float[] matrixR;
+    private float[] matrixI;
+    private float[] matrixValues;
+
 
 	/**
 	 * 
@@ -53,6 +59,13 @@ public class IndoorNavigation {
 
 		mAccelerometer = mSensorService.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mMagneticField = mSensorService.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+		valuesAccelerometer = new float[3];
+        valuesMagneticField = new float[3];
+
+        matrixR = new float[9];
+        matrixI = new float[9];
+        matrixValues = new float[3];
 	}
 
 	private SensorEventListener mySensorEventListener = new SensorEventListener() {
@@ -63,50 +76,50 @@ public class IndoorNavigation {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
-			switch (event.sensor.getType()) {
-				case Sensor.TYPE_ACCELEROMETER:
-					mGravity = event.values.clone();
-					break;
-				case Sensor.TYPE_MAGNETIC_FIELD:
-					mMagnetic = event.values.clone();
-					break;
-				default:
-					return;
-			}
-			if (mGravity != null && mMagnetic != null) {
-			    if (listener != null) {
-			        listener.onDirectionChanged(getDirection());
-			    }
-			}
+	        switch (event.sensor.getType()) {
+	        case Sensor.TYPE_ACCELEROMETER:
+	            for (int i = 0; i < 3; i++) {
+	                valuesAccelerometer[i] = event.values[i];
+	            }
+	            break;
+	        case Sensor.TYPE_MAGNETIC_FIELD:
+	            for (int i = 0; i < 3; i++) {
+	                valuesMagneticField[i] = event.values[i];
+	            }
+	            break;
+	        }
+
+	        boolean success = SensorManager.getRotationMatrix(matrixR, matrixI, valuesAccelerometer, valuesMagneticField);
+
+	        if (success) {
+	            //float[] temp = new float[9];
+
+	            // Remap to camera's point-of-view
+	            //SensorManager.remapCoordinateSystem(matrixR, SensorManager.AXIS_X, SensorManager.AXIS_Z, temp);
+
+	            SensorManager.getOrientation(matrixR, matrixValues);
+
+	            //double azimuth = Math.toDegrees(matrixValues[0]);
+	            //double pitch = Math.toDegrees(matrixValues[1]);
+	            //double roll = Math.toDegrees(matrixValues[2]);
+
+	            double floatBearing = matrixValues[0];
+
+	            // Convert from radians to degrees
+	            floatBearing = Math.toDegrees(floatBearing); // degrees east of true north (180 to -180)
+
+	            // Compensate for the difference between true north and magnetic north
+	            // if (gmf != null) floatBearing += gmf.getDeclination();
+
+	            // adjust to 0-360
+	            if (floatBearing < 0) floatBearing += 360;
+
+	            if (listener != null) {
+                    listener.onDirectionChanged((float) floatBearing);
+                }
+	        }
 		}
 	};
-
-	/**
-	 * http://capycoding.blogspot.com.br/2012/10/get-angle-from-sensor-in-android.html
-	 */
-	private float getDirection() {
-
-		float[] temp = new float[9];
-		float[] R = new float[9];
-		// Load rotation matrix into R
-		SensorManager.getRotationMatrix(temp, null, mGravity, mMagnetic);
-
-		// Remap to camera's point-of-view
-		SensorManager.remapCoordinateSystem(temp, SensorManager.AXIS_X, SensorManager.AXIS_Z, R);
-
-		// Return the orientation values
-		float[] values = new float[3];
-		SensorManager.getOrientation(R, values);
-
-		// Convert to degrees
-		for (int i = 0; i < values.length; i++) {
-			Double degrees = (values[i] * 180) / Math.PI;
-			values[i] = degrees.floatValue();
-		}
-		// angle between the magnetic north direction
-	    // 0=North, 90=East, 180=South, 270=West
-		return values[0];
-	}
 
 	public static int calculateDistance(Location src, Location dst) {
 		if (src != null && dst != null) {
