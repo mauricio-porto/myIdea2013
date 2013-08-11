@@ -1,0 +1,35 @@
+
+O foco é o método "cabra-cega", que foi idealizado para orientar a pessoa com pequenos trechos de ligação direta desde a origem até seu destino.
+
+Descrever os 2 aspectos: alerta para obstáculos baseado em sonar ultrasonico, orientação de navegação indoor.
+
+Title:
+=====
+
+GuideDroid: Low Cost Indoor Navigation Assistant for Impaired Vision Persons
+
+Abstract:
+========
+
+Since it was implemented on Android and behaves like a guide dog, we named it GuideDroid.
+
+Problem statement:
+=================
+
+Constant changes in the workplace and on the street offer collision risks much higher than the domestic environment for the visually impaired;
+For these, move first from one room to another, especially if it involves different buildings, is an arduous task;
+The public communication made ​​by posters and other writings is abundant but inaccessible to the disabled.
+
+Our solution:
+============
+
+Through the extensive use of sensors and location features existing in smartphones and other mobile devices, assist people with visual disabilities and / or hearing in tasks such as locomotion, identification of places and services available, and the location and orientation courses.
+
+Evidence the solution works:
+===========================
+
+Competitive approaches:
+======================
+
+Current status and Next steps:
+=============================

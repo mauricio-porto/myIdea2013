@@ -1,0 +1,3 @@
+Prendedores:  Lat: -30.147798000000000, Lng: -51.216933000000000 (informado)
+Lata lixo: Lat:    -30.147829837355182, Lng: -51.216876305879524, dist: 6.5, bearing: 123
+Canto janela: Lat: -30.147829793995925, Lng: -51.21688918226548, dist: 5.5, bearing: 130
