@@ -25,6 +25,8 @@ Our solution:
 
 Through the extensive use of sensors and location features existing in smartphones and other mobile devices, assist people with visual disabilities and / or hearing in tasks such as locomotion, identification of places and services available, and the location and orientation courses.
 
+... turn-by-turn instructions between waypoints.
+
 Evidence the solution works:
 ===========================
 
