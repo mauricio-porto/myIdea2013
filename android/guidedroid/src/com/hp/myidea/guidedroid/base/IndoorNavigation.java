@@ -20,9 +20,10 @@ public class IndoorNavigation {
 	private static final String TAG = IndoorNavigation.class.getSimpleName();
 
 	private Context owner;
+	private DirectionListener listener;
 	private SensorManager mSensorService;
 	private Sensor mAccelerometer;
-	private Sensor mMageneticField;
+	private Sensor mMagneticField;
 	private float[] mGravity;
 	private float[] mMagnetic;
 
@@ -35,14 +36,23 @@ public class IndoorNavigation {
 		this.init();
 	}
 
+	public void startListen(DirectionListener listener) {
+	    this.listener = listener;
+        mSensorService.registerListener(mySensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorService.registerListener(mySensorEventListener, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+	public void stopListen() {
+        mSensorService.unregisterListener(mySensorEventListener, mAccelerometer);
+        mSensorService.unregisterListener(mySensorEventListener, mMagneticField);
+        this.listener = null;
+	}
+
 	private void init() {
 		mSensorService = (SensorManager) this.owner.getSystemService(Context.SENSOR_SERVICE);
 
 		mAccelerometer = mSensorService.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		mMageneticField = mSensorService.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-		mSensorService.registerListener(mySensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-		mSensorService.registerListener(mySensorEventListener, mMageneticField, SensorManager.SENSOR_DELAY_NORMAL);
+		mMagneticField = mSensorService.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 	}
 
 	private SensorEventListener mySensorEventListener = new SensorEventListener() {
@@ -64,7 +74,9 @@ public class IndoorNavigation {
 					return;
 			}
 			if (mGravity != null && mMagnetic != null) {
-				getDirection();
+			    if (listener != null) {
+			        listener.onDirectionChanged(getDirection());
+			    }
 			}
 		}
 	};
