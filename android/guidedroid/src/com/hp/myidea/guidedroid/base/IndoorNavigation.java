@@ -161,4 +161,25 @@ public class IndoorNavigation {
 		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 180): " + src.bearingTo(dst180));
 		Log.d(TAG, "\n\n\n\n\nAngulo (deve ser 270): " + src.bearingTo(dst270));
 	}
+	
+	public static void checkData() {
+	    
+	    // Prendedores
+        Location src = new Location("AdHoc");
+        src.setLongitude(-51.216933);
+        src.setLatitude(-30.147798);
+	    
+        Location lixo = new Location("AdHoc");
+        lixo.setLongitude(-51.21698243946563);
+        lixo.setLatitude(-30.147758133159815);
+        Log.d(TAG, "\n\n\n\n\nDistancia ate lixo: " + src.distanceTo(lixo));
+        Log.d(TAG, "Angulo (deve ser complemento de 313): " + src.bearingTo(lixo));
+        
+        Location janela = new Location("AdHoc");
+        janela.setLongitude(-51.21699019997152);
+        janela.setLatitude(-30.147797999987613);
+        Log.d(TAG, "\n\n\n\n\nDistancia ate janela: " + src.distanceTo(janela));
+        Log.d(TAG, "Angulo (deve ser complemento de 270): " + src.bearingTo(janela));
+        
+	}
 }

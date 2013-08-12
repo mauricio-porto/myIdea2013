@@ -59,7 +59,7 @@ public class GuideDroidActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        IndoorNavigation.testCalculate();
+        IndoorNavigation.checkData();
         DOMUtil.test(this);
     }
 
