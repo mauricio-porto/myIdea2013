@@ -27,6 +27,7 @@ public class IndoorNavigation {
 
 	private float[] valuesAccelerometer;
     private float[] valuesMagneticField;
+    private float smoothed[] = new float[3];
 
     private float[] matrixR;
     private float[] matrixI;
@@ -76,15 +77,18 @@ public class IndoorNavigation {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
+
 	        switch (event.sensor.getType()) {
 	        case Sensor.TYPE_ACCELEROMETER:
+	            smoothed = LowPassFilter.filter(event.values, valuesAccelerometer);
 	            for (int i = 0; i < 3; i++) {
-	                valuesAccelerometer[i] = event.values[i];
+	                valuesAccelerometer[i] = smoothed[i];
 	            }
 	            break;
 	        case Sensor.TYPE_MAGNETIC_FIELD:
+	            smoothed = LowPassFilter.filter(event.values, valuesMagneticField);
 	            for (int i = 0; i < 3; i++) {
-	                valuesMagneticField[i] = event.values[i];
+	                valuesMagneticField[i] = smoothed[i];
 	            }
 	            break;
 	        }

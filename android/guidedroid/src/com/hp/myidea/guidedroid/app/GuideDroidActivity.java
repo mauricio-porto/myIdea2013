@@ -2,31 +2,21 @@ package com.hp.myidea.guidedroid.app;
 
 import java.util.Locale;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.hp.myidea.guidedroid.R;
 import com.hp.myidea.guidedroid.base.Communicator;
 import com.hp.myidea.guidedroid.base.DOMUtil;
 import com.hp.myidea.guidedroid.base.IndoorNavigation;
-import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 
 public class GuideDroidActivity extends FragmentActivity {
     private static final String TAG = GuideDroidActivity.class.getSimpleName();
@@ -59,8 +49,6 @@ public class GuideDroidActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        IndoorNavigation.checkData();
-        DOMUtil.test(this);
     }
 
     /* (non-Javadoc)
