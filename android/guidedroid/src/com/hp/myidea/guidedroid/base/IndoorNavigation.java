@@ -29,8 +29,8 @@ public class IndoorNavigation {
     private float[] valuesMagneticField;
     private float smoothed[] = new float[3];
 
-    private float[] matrixR;
-    private float[] matrixI;
+    private float[] orientation;
+    private float[] rotation;
     private float[] matrixValues;
 
 
@@ -64,8 +64,8 @@ public class IndoorNavigation {
 		valuesAccelerometer = new float[3];
         valuesMagneticField = new float[3];
 
-        matrixR = new float[9];
-        matrixI = new float[9];
+        orientation = new float[9];
+        rotation = new float[9];
         matrixValues = new float[3];
 	}
 
@@ -93,15 +93,15 @@ public class IndoorNavigation {
 	            break;
 	        }
 
-	        boolean success = SensorManager.getRotationMatrix(matrixR, matrixI, valuesAccelerometer, valuesMagneticField);
+	        boolean success = SensorManager.getRotationMatrix(orientation, rotation, valuesAccelerometer, valuesMagneticField);
 
 	        if (success) {
 	            //float[] temp = new float[9];
 
 	            // Remap to camera's point-of-view
-	            //SensorManager.remapCoordinateSystem(matrixR, SensorManager.AXIS_X, SensorManager.AXIS_Z, temp);
+	            //SensorManager.remapCoordinateSystem(orientation, SensorManager.AXIS_X, SensorManager.AXIS_Z, temp);
 
-	            SensorManager.getOrientation(matrixR, matrixValues);
+	            SensorManager.getOrientation(orientation, matrixValues);
 
 	            //double azimuth = Math.toDegrees(matrixValues[0]);
 	            //double pitch = Math.toDegrees(matrixValues[1]);

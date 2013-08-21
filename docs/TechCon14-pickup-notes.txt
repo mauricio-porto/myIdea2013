@@ -1,37 +1,78 @@
-
+﻿
 O foco é o método "cabra-cega", que foi idealizado para orientar a pessoa com pequenos trechos de ligação direta desde a origem até seu destino.
 
 Descrever os 2 aspectos: alerta para obstáculos baseado em sonar ultrasonico, orientação de navegação indoor.
 
-Title:
-=====
 
-GuideDroid: Low Cost Indoor Navigation Assistant for Impaired Vision Persons
+GuideDroid: Low Cost Indoor Navigation Assistant for the Visually Impaired
 
-Abstract:
-========
 
+Abstract
+
+This paper presents an innovative, low cost indoor navigation system for the visually impaired which takes advantage of the emerging communication technology Near Field Communication (NFC). The main idea is to orient users by NFC enabled mobile phones that gathers the current position from NFC tags and tells user the way to follow to reach her desired destination possibly using intermediate checkpoints. The system also provides a collision detection mechanism that warns user for near obstacles.
 Since it was implemented on Android and behaves like a guide dog, we named it GuideDroid.
 
-Problem statement:
-=================
+Problem statement
+
+Indoor navigation system has become an important research area due to the unavailability of GPS indoor environment. Variety of technologies is tested and new designs are generated for indoor navigation in order to circumvent the lack of excellence.
+
+The existing solutions for indoor navigation systems are generally grouped as network based navigation systems which are based on networking technologies such as sensor networks [4], and independent navigation systems providing autonomous user positions.
+
+.... 
+
+Among the many challenges faced by the visually challenged persons are the constraints of independent mobility and navigation in an unfamiliar indoor environment. Finding the location and path to some desired location including public utilities inside the building can be a daunting task. GPS based navigation that is now getting widely used is not feasible in an indoor environment.
+
+Although several attempts have been made at making such indoor navigation systems, none of them have found wide acceptance.
+
+"Existing indoor navigation systems typically require the use of expensive and heavy sensors, or equipping rooms and hallways with radio-frequency tags that can be detected by a handheld reader and which are used to determine the user's location," Bekris, of the College of Engineering's Robotics Research Lab, said. "This has often made the implementation of such systems prohibitively expensive, with few systems having been deployed."
+
 
 Constant changes in the workplace and on the street offer collision risks much higher than the domestic environment for the visually impaired;
 For these, move first from one room to another, especially if it involves different buildings, is an arduous task;
-The public communication made ​​by posters and other writings is abundant but inaccessible to the disabled.
+The public communication made by posters and other writings is abundant but inaccessible to the disabled.
 
-Our solution:
-============
+Our solution
 
 Through the extensive use of sensors and location features existing in smartphones and other mobile devices, assist people with visual disabilities and / or hearing in tasks such as locomotion, identification of places and services available, and the location and orientation courses.
 
+
+Design principles
+Uniformity of the geographic location model (latitude/longitude) to enable integration with existing outdoor navigation systems and its mechanisms.
+Cheap and off-the-shelf components.
+No changes in buildings infrastructure (no wireless network needed).
+Should be useful for both visually impaired or not.
+The user should not be obligated to start the navigation by some initial point; she should be able to start at any point when she feels lost, thus avoiding unnecessary help for well know paths.
+...
+
+System design
+nnnnn
+
+Since it is necessary to maintain the same location model (latitude/longitude) widely used in outdoor navigation and indoor GPS signal is insufficient to obtain such information, how to solve the issue?
+Our solution is to spread strategically NFC tags in the buildings, providing their  precisely calculated coordinates and thus serving as landmarks for orientation (waypoints) in the same way as an open environment (outdoor). This is the main aspect of this innovative solution.
+
+How it works
+kkkkkk
+
+
 ... turn-by-turn instructions between waypoints.
 
-Evidence the solution works:
-===========================
+Evidence the solution works
 
-Competitive approaches:
-======================
 
-Current status and Next steps:
-=============================
+
+
+
+Competitive approaches
+
+
+
+
+Current status and Next steps
+
+
+
+References
+
+
+
+
