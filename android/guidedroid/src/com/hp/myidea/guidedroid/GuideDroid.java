@@ -173,7 +173,7 @@ public class GuideDroid extends Activity {
 	                startActivity(new Intent(GuideDroid.this, UserPreferences.class));
 	                return true;
                 case R.id.action_quit:
-                    boolean bipa = this.getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0).getBoolean("beep_preference", false);
+                    boolean bipa = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beep_preference", false);
                     Toast.makeText(this, "BEEP: " + bipa, Toast.LENGTH_SHORT).show();
                     return true;
 	            default:

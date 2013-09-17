@@ -42,7 +42,7 @@
         </activity>
 
         <service android:name=".service.BluetoothReceiver"
-                 android:process=":remote" android:enabled="true" android:exported="true">
+                 android:enabled="true" android:exported="true">
             <intent-filter>
                 <action android:name="com.hp.myidea.guidedroid.service.BluetoothReceiver" />
             </intent-filter>

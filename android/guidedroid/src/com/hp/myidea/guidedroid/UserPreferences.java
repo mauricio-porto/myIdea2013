@@ -25,9 +25,6 @@ public class UserPreferences extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PreferenceManager.setDefaultValues(GuideDroidApplication.getContext(), 
-                        GuideDroidApplication.GUIDE_DROID_PREFS, MODE_PRIVATE, R.xml.guidedroid_preference, false);
-        getPreferenceManager().setSharedPreferencesName(GuideDroidApplication.GUIDE_DROID_PREFS);
         this.addPreferencesFromResource(R.xml.guidedroid_preference);
     }
 }

@@ -13,7 +13,6 @@ import android.preference.PreferenceManager;
  */
 public class GuideDroidApplication extends Application {
     private static Context context;
-    public static final String GUIDE_DROID_PREFS = "GuideDroidSharedPrefs";
 
     @Override
     public void onCreate() {

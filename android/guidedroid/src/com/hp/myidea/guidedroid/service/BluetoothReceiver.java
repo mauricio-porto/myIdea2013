@@ -37,9 +37,6 @@ public class BluetoothReceiver extends Service {
 
     private static final String TAG = BluetoothReceiver.class.getSimpleName();
 
-    private Context appContext;
-    private SharedPreferences preferences;
-
     private static final int ARDUINO_NOTIFICATIONS = 1;
 
     public static final String ACTION_START = "startService";
@@ -159,8 +156,6 @@ public class BluetoothReceiver extends Service {
 
         this.notifier.setLatestEventInfo(this, "GuideDroid", "Your guide friend", this.buildIntent());	// TODO: Localize!!!!
         this.notifier.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-
-        this.appContext = GuideDroidApplication.getContext();
     }
 
     @Override
@@ -249,13 +244,13 @@ public class BluetoothReceiver extends Service {
 
     private void restoreState() {
         // Restore state
-        SharedPreferences state = this.getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0);
+        SharedPreferences state = PreferenceManager.getDefaultSharedPreferences(this);
         this.arduinoBluetoothAddress = state.getString("ArduinoBluetoothAddress", null);
     }
 
     private void storeState() {
         // Persist state
-        SharedPreferences state = this.getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0);
+        SharedPreferences state = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = state.edit();
         editor.putString("ArduinoBluetoothAddress", this.arduinoBluetoothAddress);
         editor.commit();
@@ -345,6 +340,9 @@ public class BluetoothReceiver extends Service {
                     // Log.d(TAG, "\tAs Hex: " + asHex(readBytes));
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
+                    if (readMessage.length() < 2) {
+                        break;
+                    }
                     //Log.d(TAG, "\tHere it is: " + readMessage);
                     if (readMessage.contains("?")) {	// It is responding a question mark sent before
                     	// format is '?<dist>#<range>[!]'
@@ -362,11 +360,7 @@ public class BluetoothReceiver extends Service {
                     	builder.append(running?"is running":"is not running");
                     	communicator.sayIt(builder.toString());
                     } else {
-                        boolean bipa = getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0).getBoolean("beep_preference", false);
-                        Toast.makeText(BluetoothReceiver.this, "BEEP: " + bipa, Toast.LENGTH_SHORT).show();
-                        preferences = getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0);
-                        boolean beep = preferences.getBoolean("beep_preference", true);
-                        Log.d(TAG, "\t\t\t\tPORRA DO BEEP NO SERVICE: " + beep);
+                        boolean beep = PreferenceManager.getDefaultSharedPreferences(BluetoothReceiver.this).getBoolean("beep_preference", false);
 	                    try {
 							int dist = Integer.parseInt(readMessage);
                             communicator.vibrate(dist);
