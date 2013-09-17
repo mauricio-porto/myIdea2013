@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".GuideDroidApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -32,6 +33,13 @@
                   android:label="@string/select_device"
                   android:theme="@android:style/Theme.Dialog"
                   android:configChanges="orientation|keyboardHidden" />
+
+        <activity android:name=".UserPreferences" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".service.BluetoothReceiver"
                  android:process=":remote" android:enabled="true" android:exported="true">

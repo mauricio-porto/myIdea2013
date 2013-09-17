@@ -18,11 +18,13 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
 import com.hp.myidea.guidedroid.GuideDroid;
+import com.hp.myidea.guidedroid.GuideDroidApplication;
 import com.hp.myidea.guidedroid.R;
 import com.hp.myidea.guidedroid.base.BluetoothConnector;
 import com.hp.myidea.guidedroid.base.Communicator;
@@ -34,6 +36,9 @@ import com.hp.myidea.guidedroid.base.Communicator;
 public class BluetoothReceiver extends Service {
 
     private static final String TAG = BluetoothReceiver.class.getSimpleName();
+
+    private Context appContext;
+    private SharedPreferences preferences;
 
     private static final int ARDUINO_NOTIFICATIONS = 1;
 
@@ -155,6 +160,7 @@ public class BluetoothReceiver extends Service {
         this.notifier.setLatestEventInfo(this, "GuideDroid", "Your guide friend", this.buildIntent());	// TODO: Localize!!!!
         this.notifier.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 
+        this.appContext = GuideDroidApplication.getContext();
     }
 
     @Override
@@ -243,13 +249,13 @@ public class BluetoothReceiver extends Service {
 
     private void restoreState() {
         // Restore state
-        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
+        SharedPreferences state = this.getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0);
         this.arduinoBluetoothAddress = state.getString("ArduinoBluetoothAddress", null);
     }
 
     private void storeState() {
         // Persist state
-        SharedPreferences state = this.getSharedPreferences(GuideDroid.GUIDE_DROID_PREFS, 0);
+        SharedPreferences state = this.getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0);
         SharedPreferences.Editor editor = state.edit();
         editor.putString("ArduinoBluetoothAddress", this.arduinoBluetoothAddress);
         editor.commit();
@@ -330,16 +336,16 @@ public class BluetoothReceiver extends Service {
                 }
                 break;
             case MESSAGE_READ:
-                Log.d(TAG, "\n\nData received.");
+                //Log.d(TAG, "\n\nData received.");
                 if (msg.arg1 > 0) {	// msg.arg1 contains the number of bytes read
-                	Log.d(TAG, "\tRead size: " + msg.arg1);
+                	//Log.d(TAG, "\tRead size: " + msg.arg1);
                     byte[] readBuf = (byte[]) msg.obj;
                     byte[] readBytes = new byte[msg.arg1];
                     System.arraycopy(readBuf, 0, readBytes, 0, msg.arg1);
                     // Log.d(TAG, "\tAs Hex: " + asHex(readBytes));
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1).trim();
-                    Log.d(TAG, "\tHere it is: " + readMessage);
+                    //Log.d(TAG, "\tHere it is: " + readMessage);
                     if (readMessage.contains("?")) {	// It is responding a question mark sent before
                     	// format is '?<dist>#<range>[!]'
                     	String distance = readMessage.substring(1 + readMessage.indexOf('?'), readMessage.indexOf('#'));
@@ -356,11 +362,17 @@ public class BluetoothReceiver extends Service {
                     	builder.append(running?"is running":"is not running");
                     	communicator.sayIt(builder.toString());
                     } else {
+                        boolean bipa = getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0).getBoolean("beep_preference", false);
+                        Toast.makeText(BluetoothReceiver.this, "BEEP: " + bipa, Toast.LENGTH_SHORT).show();
+                        preferences = getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0);
+                        boolean beep = preferences.getBoolean("beep_preference", true);
+                        Log.d(TAG, "\t\t\t\tPORRA DO BEEP NO SERVICE: " + beep);
 	                    try {
 							int dist = Integer.parseInt(readMessage);
+                            communicator.vibrate(dist);
 							counter++;
 							counter %= 5;
-							if (counter == 0) {
+							if (beep && counter == 0) {
 								communicator.playTone(DIST_FREQ_RATIO / dist, defaultDuration);
 							}
 						} catch (NumberFormatException e) {

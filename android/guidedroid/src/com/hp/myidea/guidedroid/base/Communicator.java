@@ -9,6 +9,7 @@ import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
@@ -23,6 +24,10 @@ public class Communicator implements TextToSpeech.OnInitListener {
     private AudioTrack track;
 	private final int sampleRate = 44100; // in Hertz
 
+    private Vibrator vibrator;
+	private int keepVibro = 80;
+	private int waitVibro;
+
 	private TextToSpeech mTts;
 
     public Communicator(Context owner) {
@@ -31,6 +36,7 @@ public class Communicator implements TextToSpeech.OnInitListener {
         // The OnInitListener (second argument) is called after initialization completes.
         mTts = new TextToSpeech(owner, this);
         this.initAudioDevice();
+        this.vibrator = (Vibrator) owner.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public void sayIt(String text) {
@@ -49,7 +55,21 @@ public class Communicator implements TextToSpeech.OnInitListener {
 		track.stop();
 	}
 
-    // Implements TextToSpeech.OnInitListener.
+	public void vibrate(int distance) {
+        if (this.vibrator != null) {
+            this.vibrator.cancel();
+            waitVibro = (distance - 30 < 0)?0:distance > 100?100:distance;
+            this.vibrator.vibrate(new long[]{waitVibro, keepVibro, waitVibro, keepVibro, waitVibro, keepVibro}, -1);
+        }
+	}
+
+	public void stopVibrating() {
+	    if (this.vibrator != null) {
+	        this.vibrator.cancel();
+	    }
+	}
+
+	// Implements TextToSpeech.OnInitListener.
     public void onInit(int status) {
         // status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
         if (status == TextToSpeech.SUCCESS) {

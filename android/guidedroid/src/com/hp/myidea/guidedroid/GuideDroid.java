@@ -13,8 +13,10 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -24,8 +26,6 @@ import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 
 public class GuideDroid extends Activity {
 	private static final String TAG = GuideDroid.class.getSimpleName();
-
-	public static final String GUIDE_DROID_PREFS = "GuideDroidSharedPrefs";
 
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -165,6 +165,22 @@ public class GuideDroid extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+
+	 @Override
+	    public boolean onOptionsItemSelected(MenuItem item) {
+	        switch (item.getItemId()) {
+	            case R.id.action_settings:
+	                startActivity(new Intent(GuideDroid.this, UserPreferences.class));
+	                return true;
+                case R.id.action_quit:
+                    boolean bipa = this.getSharedPreferences(GuideDroidApplication.GUIDE_DROID_PREFS, 0).getBoolean("beep_preference", false);
+                    Toast.makeText(this, "BEEP: " + bipa, Toast.LENGTH_SHORT).show();
+                    return true;
+	            default:
+	                break;
+	        }
+	        return false;
+	    }
 
     private ServiceConnection btReceiverConnection = new ServiceConnection() {
 
