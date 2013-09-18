@@ -1,19 +1,20 @@
 package com.hp.myidea.guidedroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,8 @@ import com.hp.myidea.guidedroid.service.BluetoothReceiver;
 
 public class GuideDroid extends Activity {
 	private static final String TAG = GuideDroid.class.getSimpleName();
+
+	private static final int QUIT_DIALOG = 0xb0ca;
 
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -166,21 +169,21 @@ public class GuideDroid extends Activity {
 		return true;
 	}
 
-	 @Override
-	    public boolean onOptionsItemSelected(MenuItem item) {
-	        switch (item.getItemId()) {
-	            case R.id.action_settings:
-	                startActivity(new Intent(GuideDroid.this, UserPreferences.class));
-	                return true;
-                case R.id.action_quit:
-                    boolean bipa = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beep_preference", false);
-                    Toast.makeText(this, "BEEP: " + bipa, Toast.LENGTH_SHORT).show();
-                    return true;
-	            default:
-	                break;
-	        }
-	        return false;
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.action_settings:
+	            startActivity(new Intent(GuideDroid.this, UserPreferences.class));
+	            return true;
+	        case R.id.action_quit:
+	        	showDialog(QUIT_DIALOG);
+	            return true;
+	        default:
+	            break;
 	    }
+	    return false;
+	}
 
     private ServiceConnection btReceiverConnection = new ServiceConnection() {
 
@@ -301,5 +304,27 @@ public class GuideDroid extends Activity {
     	//this.communicator.sayIt("Help");
 		this.sendTextToService(BluetoothReceiver.SEND_MESSAGE, "?");
     }
+
+	@Override
+	@Deprecated
+	protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case QUIT_DIALOG:
+            return new AlertDialog.Builder(GuideDroid.this)
+                .setTitle(R.string.dialog_quit_title)
+                .setPositiveButton(R.string.dialog_quit_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .setNegativeButton(R.string.dialog_quit_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .create();
+            default:
+            	break;
+        }
+		return super.onCreateDialog(id);
+	}
 
 }
