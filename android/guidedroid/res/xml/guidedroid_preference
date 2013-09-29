@@ -23,6 +23,12 @@
             android:title="@string/guidedroid_preferences">
             
         <CheckBoxPreference
+                android:key="vibration_preference"
+                android:title="@string/title_vibration_preference"
+                android:summary="@string/summary_vibration_preference_yes_no"
+                android:defaultValue="true" />
+
+        <CheckBoxPreference
                 android:key="beep_preference"
                 android:title="@string/title_beep_preference"
                 android:summary="@string/summary_beep_preference_yes_no"

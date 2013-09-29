@@ -111,6 +111,12 @@ public class GuideDroid extends Activity {
 		startService(intent);
     }
 
+    private void stopBTReceiver() {
+        Log.d(TAG, "\t\t\t\t\tWILL STOP!!!!");
+        Intent intent = new Intent(BluetoothReceiver.ACTION_STOP);
+        intent.setClass(this, BluetoothReceiver.class);
+        stopService(intent);
+    }
 
     @Override
     protected void onResume() {
@@ -314,6 +320,8 @@ public class GuideDroid extends Activity {
                 .setTitle(R.string.dialog_quit_title)
                 .setPositiveButton(R.string.dialog_quit_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        stopBTReceiver();
+                        finish();
                     }
                 })
                 .setNegativeButton(R.string.dialog_quit_cancel, new DialogInterface.OnClickListener() {

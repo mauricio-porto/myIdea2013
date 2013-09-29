@@ -34,6 +34,8 @@
     <string name="guidedroid_preferences">Preferences</string>
     <string name="title_beep_preference">Beep</string>
     <string name="summary_beep_preference_yes_no">Use sound to warn obstacles</string>
+    <string name="title_vibration_preference">Vibration</string>
+    <string name="summary_vibration_preference_yes_no">Use vibration to warn obstacles</string>
 
     <!--  Content Descriptions -->
     <string name="description_beep">Beep button</string>

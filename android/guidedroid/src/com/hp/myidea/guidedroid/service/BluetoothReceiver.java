@@ -361,9 +361,12 @@ public class BluetoothReceiver extends Service {
                     	communicator.sayIt(builder.toString());
                     } else {
                         boolean beep = PreferenceManager.getDefaultSharedPreferences(BluetoothReceiver.this).getBoolean("beep_preference", false);
+                        boolean vibrate = PreferenceManager.getDefaultSharedPreferences(BluetoothReceiver.this).getBoolean("vibration_preference", false);
 	                    try {
 							int dist = Integer.parseInt(readMessage);
-                            communicator.vibrate(dist);
+							if (vibrate) {
+							    communicator.vibrate(dist);
+							}
 							counter++;
 							counter %= 5;
 							if (beep && counter == 0) {
