@@ -331,9 +331,9 @@ public class BluetoothReceiver extends Service {
                 }
                 break;
             case MESSAGE_READ:
-                //Log.d(TAG, "\n\nData received.");
+                Log.d(TAG, "\n\nData received.");
                 if (msg.arg1 > 0) {	// msg.arg1 contains the number of bytes read
-                	//Log.d(TAG, "\tRead size: " + msg.arg1);
+                	Log.d(TAG, "\tRead size: " + msg.arg1);
                     byte[] readBuf = (byte[]) msg.obj;
                     byte[] readBytes = new byte[msg.arg1];
                     System.arraycopy(readBuf, 0, readBytes, 0, msg.arg1);
@@ -343,7 +343,7 @@ public class BluetoothReceiver extends Service {
                     if (readMessage.length() < 2) {
                         break;
                     }
-                    //Log.d(TAG, "\tHere it is: " + readMessage);
+                    Log.d(TAG, "\tHere it is: " + readMessage);
                     if (readMessage.contains("?")) {	// It is responding a question mark sent before
                     	// format is '?<dist>#<range>[!]'
                     	String distance = readMessage.substring(1 + readMessage.indexOf('?'), readMessage.indexOf('#'));

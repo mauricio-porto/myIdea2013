@@ -29,6 +29,7 @@ void loop() {
   if (Serial.available() > 0) {
     char c = Serial.read();
     if (c == '!') {
+      Serial.println("!!!");
       running = !running;
       goto bailout;
     }
