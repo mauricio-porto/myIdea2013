@@ -353,11 +353,11 @@ public class BluetoothReceiver extends Service {
                     		range = range.substring(0, range.length() -1);
                     	}
                     	StringBuilder builder = new StringBuilder();
-                    	builder.append("Distance is ");
+                    	builder.append(getString(R.string.speech_distance));
                     	builder.append(distance);
-                    	builder.append(", and range is ");
+                    	builder.append(getString(R.string.speech_range));
                     	builder.append(range).append(", ");
-                    	builder.append(running?"is running":"is not running");
+                    	builder.append(running?getString(R.string.speech_running):getString(R.string.speech_not_running));
                     	communicator.sayIt(builder.toString());
                     } else {
                         boolean beep = PreferenceManager.getDefaultSharedPreferences(BluetoothReceiver.this).getBoolean("beep_preference", false);

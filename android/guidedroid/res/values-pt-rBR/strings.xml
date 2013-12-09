@@ -46,12 +46,12 @@
     <string name="description_help">Help button</string>
 
     <!-- Text to Speech -->
-    <string name="speech_distance">Distance is </string>
-    <string name="speech_range">, and range is </string>
-    <string name="speech_running">is running</string>
-    <string name="speech_not_running">is not running</string>
-    <string name="speech_decrease">Decrease range</string>
-    <string name="speech_increase">Increase range</string>
-    <string name="speech_start_stop">Start, Stop</string>
+    <string name="speech_distance">A distância é </string>
+    <string name="speech_range">, e o alcance é </string>
+    <string name="speech_running">rodando</string>
+    <string name="speech_not_running">parado</string>
+    <string name="speech_decrease">Diminuir alcance</string>
+    <string name="speech_increase">Aumentar alcance</string>
+    <string name="speech_start_stop">Iniciar, Parar</string>
     
 </resources>
