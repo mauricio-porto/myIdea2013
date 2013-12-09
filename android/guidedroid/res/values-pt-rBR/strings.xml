@@ -46,8 +46,8 @@
     <string name="description_help">Help button</string>
 
     <!-- Text to Speech -->
-    <string name="speech_distance">A distância é </string>
-    <string name="speech_range">, e o alcance é </string>
+    <string name="speech_distance">A distância é \u0020</string>
+    <string name="speech_range">, e o alcance é \u0020</string>
     <string name="speech_running">rodando</string>
     <string name="speech_not_running">parado</string>
     <string name="speech_decrease">Diminuir alcance</string>

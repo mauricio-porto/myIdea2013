@@ -40,6 +40,7 @@ public class Communicator implements TextToSpeech.OnInitListener {
     }
 
     public void sayIt(String text) {
+        Log.d(TAG, "\n\n\t\tOlha o que vou dizer: " + text);
     	mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);    	
     }
 
@@ -73,15 +74,14 @@ public class Communicator implements TextToSpeech.OnInitListener {
     public void onInit(int status) {
         // status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
         if (status == TextToSpeech.SUCCESS) {
-            // Set preferred language to US english.
+            // Set preferred language to BR portuguese.
             // Note that a language may not be available, and the result will indicate this.
-            int result = mTts.setLanguage(Locale.US);
-            // Try this someday for some interesting results.
-            // int result mTts.setLanguage(Locale.FRANCE);
+            int result = mTts.setLanguage(new Locale("pt_BR"));
             if (result == TextToSpeech.LANG_MISSING_DATA ||
                 result == TextToSpeech.LANG_NOT_SUPPORTED) {
                // Language data is missing or the language is not supported.
-                Log.e(TAG, "Language is not available.");
+                Log.e(TAG, "Portuguese is not available. Falling back to US English");
+                mTts.setLanguage(Locale.US);
             } else {
                 // Check the documentation for other possible result codes.
                 // For example, the language may be available for the locale,
